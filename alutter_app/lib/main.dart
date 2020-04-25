@@ -12,6 +12,7 @@ import 'AlertDialogClass.dart';
 import 'Align_CenterClass.dart';
 import 'Column_RowClass.dart';
 import 'ContainersClass.dart';
+import 'LoadingClass.dart';
 
 void main() => runApp(MyApp());
 
@@ -80,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: ContainersClass(),
+      body: LoadingClass(),
     );
   }
 }
