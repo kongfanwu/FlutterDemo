@@ -2,15 +2,15 @@
 
 A new Flutter project.
 
-## Getting Started
+## 组件总结
 
-This project is a starting point for a Flutter application.
+### 布局的组件
+Align 
+Center
+Row
+Column
 
-A few resources to get you started if this is your first Flutter project:
+### Flutter中尺寸限制类容器组件包括ConstrainedBox、UnconstrainedBox、SizedBox、AspectRatio、FractionallySizedBox、LimitedBox、Container。这些组件可以约束子组件的尺寸，下面一一介绍。
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+ConstrainedBox: 约束子组件不可超过限制
+UnconstrainedBox: 约束的子组件允许超过自身限制，但是自身受父组件限制，debug 会给提示，release 超出部分会被截取。

@@ -9,6 +9,9 @@ import 'TextFiedlClass.dart';
 import 'FormClass.dart';
 import 'ExpandedClass.dart';
 import 'AlertDialogClass.dart';
+import 'Align_CenterClass.dart';
+import 'Column_RowClass.dart';
+import 'ContainersClass.dart';
 
 void main() => runApp(MyApp());
 
@@ -77,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: AlertDialogClass(),
+      body: ContainersClass(),
     );
   }
 }
