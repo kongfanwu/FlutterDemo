@@ -7,6 +7,8 @@ import 'MyDropDownButton.dart';
 import 'SwitchAndCheckboxComponent.dart';
 import 'TextFiedlClass.dart';
 import 'FormClass.dart';
+import 'ExpandedClass.dart';
+import 'AlertDialogClass.dart';
 
 void main() => runApp(MyApp());
 
@@ -75,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: FormClass(),
+      body: AlertDialogClass(),
     );
   }
 }
