@@ -8,7 +8,8 @@ class dataTableClass extends StatefulWidget {
 
 // ignore: camel_case_types
 class _dataTableClassState extends State<dataTableClass> {
-
+  var _sortAscending = true;
+  
   List<User> data = [
     User('老孟', 18),
     User('老孟1', 19,selected: true),
@@ -22,7 +23,7 @@ class _dataTableClassState extends State<dataTableClass> {
   @override
   Widget build(BuildContext context) {
 
-    var _sortAscending = true;
+
 
     List<DataRow> dateRows = [];
     for (int i = 0; i < data.length; i++) {
