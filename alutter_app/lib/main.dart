@@ -13,6 +13,8 @@ import 'Align_CenterClass.dart';
 import 'Column_RowClass.dart';
 import 'ContainersClass.dart';
 import 'LoadingClass.dart';
+import 'GridViewClass.dart';
+import 'StackClass.dart';
 import 'dataTableClass.dart';
 
 void main() => runApp(MyApp());
