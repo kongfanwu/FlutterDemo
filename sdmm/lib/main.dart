@@ -31,7 +31,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var _title = '';
-  int _currentIndex = 0;
+  int _currentIndex = 4;
   List pages = [
     SDMMMessage(),
     SDMMAI(),
