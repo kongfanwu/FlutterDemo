@@ -3,7 +3,7 @@ import './page/SDMMMessage.dart';
 import './page/SDMMAI.dart';
 import './page/SDMMWork.dart';
 import './page/SDMMApply.dart';
-import './page/SDMMMine.dart';
+import 'page/Mine/SDMMMine.dart';
 
 void main() => runApp(MyApp());
 

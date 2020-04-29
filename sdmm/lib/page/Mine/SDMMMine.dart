@@ -1,4 +1,7 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'SDMMFeedback.dart';
 
 class SDMMMine extends StatefulWidget {
   @override
@@ -59,6 +62,7 @@ class _SDMMMineState extends State<SDMMMine> {
               Icon(
                 Icons.arrow_forward_ios,
                 color: Colors.black45,
+                size: 15
               ),
             ],
           ),
@@ -112,7 +116,7 @@ class _SDMMMineState extends State<SDMMMine> {
                       ),
                     ),
                   ),
-                  Icon(Icons.arrow_forward_ios, color: Colors.black45),
+                  Icon(Icons.arrow_forward_ios, color: Colors.black45, size: 15,),
                 ],
               ),
             );
@@ -124,6 +128,18 @@ class _SDMMMineState extends State<SDMMMine> {
         ),
       ),
     );
+  }
+
+  Void rowOnTap(TapDownDetails tapDownDetails, int index, List <MineItemModel> items) {
+    // 意见反馈
+    if (index == 2) {
+      Navigator.of(context).push(
+        new MaterialPageRoute(builder: (context) {
+          return SDMMFeedBack(navBarTitle: items[index].title,); // push
+        },
+        ),
+      );
+    }
   }
 
   @override
@@ -143,7 +159,8 @@ class _SDMMMineState extends State<SDMMMine> {
           createTopWidget(context),
           SizedBox(height: 10),
           createListView(context, items, onTap: (TapDownDetails tapDownDetails, int index){
-            print('row click:${items[index].title}');
+//            print('row click:${items[index].title}');
+            rowOnTap(tapDownDetails, index, items);
           }),
         ],
       ),
