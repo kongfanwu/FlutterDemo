@@ -1,5 +1,16 @@
 import 'package:flutter/material.dart';
 
+class User {
+  User(this.name, this.age, this.aaa, this.year, this.month, {this.selected = false});
+
+  String name;
+  int age;
+  bool selected;
+  String aaa;
+  String month;
+  String year;
+}
+
 // ignore: camel_case_types
 class dataTableClass extends StatefulWidget {
   @override
@@ -9,21 +20,19 @@ class dataTableClass extends StatefulWidget {
 // ignore: camel_case_types
 class _dataTableClassState extends State<dataTableClass> {
   var _sortAscending = true;
-  
+
   List<User> data = [
-    User('老孟', 18),
-    User('老孟1', 19,selected: true),
-    User('老孟2', 20),
-    User('老孟3', 21),
-    User('老孟4', 22),
+    User('老孟', 1, '男',  '1990', '5'),
+    User('老孟', 2, '男',  '1990', '5'),
+    User('老孟', 3, '男',  '1990', '5'),
+    User('老孟', 4, '男',  '1990', '5'),
+    User('老孟', 5, '男',  '1990', '5'),
+    User('老孟', 6, '男',  '1990', '5'),
+    User('老孟', 7, '男',  '1990', '5',selected: true),
   ];
-
-
 
   @override
   Widget build(BuildContext context) {
-
-
 
     List<DataRow> dateRows = [];
     for (int i = 0; i < data.length; i++) {
@@ -43,30 +52,40 @@ class _dataTableClassState extends State<dataTableClass> {
 //              placeholder: true // 灰色显示
           ),
           DataCell(Text('${data[i].age}')),
+          DataCell(Text('${data[i].aaa}')),
+          DataCell(Text('${data[i].year}')),
+          DataCell(Text('${data[i].month}')),
         ],
       ));
     }
 
-    return DataTable(
-        sortColumnIndex: 1,
-        sortAscending: _sortAscending,
-        columns: [
-      DataColumn(label: Text('姓名')),
-      DataColumn(
-        label: Text('年龄'),
-        onSort: (int columnIndex, bool ascending){
-          setState(() {
-            _sortAscending = ascending;
-            if(ascending){
-              data.sort((a, b) => a.age.compareTo(b.age));
-            }else {
-              data.sort((a, b) => b.age.compareTo(a.age));
-            }
-          });
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: DataTable(
+          sortColumnIndex: 1,
+          sortAscending: _sortAscending,
+          columns: [
+            DataColumn(label: Text('姓名')),
+            DataColumn(
+                label: Text('年龄'),
+                onSort: (int columnIndex, bool ascending){
+                  setState(() {
+                    _sortAscending = ascending;
+                    if(ascending){
+                      data.sort((a, b) => a.age.compareTo(b.age));
+                    }else {
+                      data.sort((a, b) => b.age.compareTo(a.age));
+                    }
+                  });
+                }
+            ),
+            DataColumn(label: Text('性别')),
+            DataColumn(label: Text('出生年份')),
+            DataColumn(label: Text('出生月份')),
+          ], rows: dateRows),
+    );
 
-        }
-      ),
-    ], rows: dateRows);
+
 
 //    return DataTable(
 //      sortColumnIndex: 1,
@@ -103,10 +122,3 @@ class _dataTableClassState extends State<dataTableClass> {
 }
 
 
-class User {
-  User(this.name, this.age, {this.selected = false});
-
-  String name;
-  int age;
-  bool selected;
-}
