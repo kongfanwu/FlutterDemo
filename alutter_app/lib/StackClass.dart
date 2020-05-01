@@ -11,8 +11,7 @@ class StackClass extends StatelessWidget {
         children: <Widget>[
           Stack(
             fit: StackFit.loose, // Stack未定位的子组件大小由fit参数决定，默认值是StackFit.loose，表示子组件自己决定，StackFit.expand表示尽可能的大
-            alignment:
-            Alignment.center, // Stack未定位的子组件的默认左上角对齐，通过alignment参数控制，用法如下：
+            alignment: Alignment.center, // Stack未定位的子组件的默认左上角对齐，通过alignment参数控制，用法如下：
             children: <Widget>[
               Container(
                 width: 200,

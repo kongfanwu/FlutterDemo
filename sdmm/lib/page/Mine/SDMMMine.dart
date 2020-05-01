@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'SDMMFeedback.dart';
+import 'SDMMMyQRCode.dart';
 
 class SDMMMine extends StatefulWidget {
   @override
@@ -131,8 +132,15 @@ class _SDMMMineState extends State<SDMMMine> {
   }
 
   Void rowOnTap(TapDownDetails tapDownDetails, int index, List <MineItemModel> items) {
-    // 意见反馈
-    if (index == 2) {
+    if (index == 1) { // 我的营销二维码
+      Navigator.of(context).push(
+        new MaterialPageRoute(builder: (context) {
+          return SDMMMyQRCode(navBarTitle: items[index].title,); // push
+        },
+        ),
+      );
+    }
+    else if (index == 2) {// 意见反馈
       Navigator.of(context).push(
         new MaterialPageRoute(builder: (context) {
           return SDMMFeedBack(navBarTitle: items[index].title,); // push
