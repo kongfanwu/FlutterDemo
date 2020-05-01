@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:convert/convert.dart';
 
 class SDMMFeedBack extends StatefulWidget {
 
@@ -13,8 +14,14 @@ class SDMMFeedBack extends StatefulWidget {
 
 class _SDMMFeedBackState extends State<SDMMFeedBack> {
 
+  List <FeedbackItemModel> items = new List();
+  bool _submitBtnEnable = false;
+  // 创建编辑回调控制器
+  TextEditingController _pwdController = new TextEditingController();
+
   Widget createInputView() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(
           padding: EdgeInsets.only(top: 25, bottom: 25, left: 10),
@@ -29,7 +36,7 @@ class _SDMMFeedBackState extends State<SDMMFeedBack> {
             autocorrect: true, // 自动获取焦点
             keyboardType: TextInputType.text, // 键盘类型
             decoration: InputDecoration(
-              hintText: 'hintText',
+              hintText: '请输入',
               fillColor: Colors.black12,
               filled: true,
               enabledBorder: OutlineInputBorder(
@@ -42,8 +49,9 @@ class _SDMMFeedBackState extends State<SDMMFeedBack> {
               ),
             ),
             onChanged: (val) { // 获取输入回调方式一
-              print('onChange' + val);
+              showSubmitButtonState();
             },
+            controller: _pwdController,
           ),
         ),
       ],
@@ -63,8 +71,7 @@ class _SDMMFeedBackState extends State<SDMMFeedBack> {
           ),
           Container(
             padding: EdgeInsets.only(top: 10),
-            color: Colors.amberAccent,
-            height: 200,
+            height: 85,
             child: GridView.builder(
               physics: NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -74,29 +81,76 @@ class _SDMMFeedBackState extends State<SDMMFeedBack> {
                 childAspectRatio: 3, // 子控件宽高比。
               ),
               itemBuilder: (context, index) {
-                return Container(
-                  decoration: BoxDecoration(
+                return GestureDetector( // 点击事件
+                  onTapDown: (TapDownDetails tapDownDetails) {
+                    setState(() {
+                      items[index].select = !items[index].select;
+                      showSubmitButtonState();
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.all(Radius.circular(5)),
-                      color: Colors.black12 // 圆角设置颜色后，Container 的color 就不要再次设置颜色了。会报错
-                  ),
-                  child: Center(
-                    child: Text(items[index].title),
+                      color: items[index].select ? Color.fromARGB(255, 254, 240, 248) : Colors.black12, // 圆角设置颜色后，Container 的color 就不要再次设置颜色了。会报错
+                      border: Border.all(
+                        color: items[index].select ? Color.fromARGB(255, 239, 22, 128) : Color.fromARGB(0, 0, 0, 0),
+                        width: 1,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        items[index].title,
+                        style: TextStyle(color: items[index].select ? Color.fromARGB(255, 239, 22, 128) : Colors.black),
+                      ),
+                    ),
                   ),
                 );
               },
               itemCount: items.length,
             ),
-
           ),
-
         ],
       ),
     );
   }
 
-  List <FeedbackItemModel> createFeedbackItemList() {
-    List <FeedbackItemModel> items = new List();
+  Widget createBottomView() {
+    // Row(横向)-> Expanded(横向撑满)-> Container(加左右间距)-> RaisedButton. 初学者的思路，这布局甚是觉得恶心。可能有其他方式。
+    return Row(
+      children: <Widget>[
+        Expanded(
+          flex: 1,
+          child: Container(
+            margin: EdgeInsets.only(left: 10, right: 10),
+            child: RaisedButton(
+              child: Text('提交'),
+              textColor: Colors.white,
+              disabledTextColor: Colors.white,
+              color: Color.fromARGB(255, 239, 22, 128),
+              disabledColor: Color.fromARGB(255, 207, 208, 207),
+              onPressed: _submitBtnEnable ? (){
+                var params = <String, dynamic> {};
+                params['feedbackContext'] = _pwdController.text;
+
+                var selectTitles = <String>[];
+                params['feedbackTagList'] = selectTitles;
+                for (var itemModel in items) {
+                  if (itemModel.select) {
+                    selectTitles.add(itemModel.title);
+                  }
+                }
+                print(params.toString());
+                Navigator.pop(context);
+              } : null,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void createFeedbackItemList() {
     items.add(FeedbackItemModel(title: '功能出错', select: false));
     items.add(FeedbackItemModel(title: '出现闪退', select: false));
     items.add(FeedbackItemModel(title: '信息错误', select: false));
@@ -104,11 +158,32 @@ class _SDMMFeedBackState extends State<SDMMFeedBack> {
     items.add(FeedbackItemModel(title: '体验问题', select: false));
     items.add(FeedbackItemModel(title: '出现乱码', select: false));
     items.add(FeedbackItemModel(title: '其他', select: false));
-    return items;
+  }
+
+  // 输入反馈内容 && 至少选中一个反馈类型。将提交按钮高亮显示
+  void showSubmitButtonState() {
+    bool isSelect = false;
+    for (var itemModel in items) {
+      if (itemModel.select) {
+        isSelect = true;
+        break;
+      }
+    }
+    setState(() {
+      _submitBtnEnable = isSelect && _pwdController.text.length > 0;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    createFeedbackItemList();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: new AppBar(
         title: new Text(widget.navBarTitle),
@@ -116,9 +191,8 @@ class _SDMMFeedBackState extends State<SDMMFeedBack> {
       body: Column(
         children: <Widget>[
           createInputView(),
-          createCenterView(
-              items: createFeedbackItemList()
-          ),
+          createCenterView(items: items),
+          createBottomView(),
         ],
       )
     );
@@ -129,6 +203,5 @@ class _SDMMFeedBackState extends State<SDMMFeedBack> {
 class FeedbackItemModel {
   FeedbackItemModel({this.title, this.select});
   final String title;
-  final bool select;
-
+  bool select;
 }
