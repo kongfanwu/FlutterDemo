@@ -7,8 +7,10 @@ import 'dart:convert';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'PickerData.dart';
 
+import 'package:flutter/services.dart';
+
 class SDMMUserInfoSubmitModel {
-  String name, phone, gender, genderId, carId, date, address, currentAddress;
+  String name, phone, gender, genderId, carId, date, address;
 }
 
 class SDMMUserDetail extends StatefulWidget {
@@ -23,7 +25,7 @@ class _SDMMUserDetailState extends State<SDMMUserDetail> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   var _userInfoModel = SDMMUserInfoSubmitModel();
-  var gender = '未知';
+  var _cityJson;
 
   // 年月日picker
   showPickerArray(BuildContext context) {
@@ -35,6 +37,10 @@ class _SDMMUserDetailState extends State<SDMMUserDetail> {
       },
       onConfirm: (date) {
         print('confirm $date');
+        print('confirm ${date.toString()}');
+        setState(() {
+          _userInfoModel.date = '${date.year}-${date.month}-${date.day}';
+        });
       },
       currentTime: DateTime.now(), locale: LocaleType.zh
     );
@@ -55,23 +61,80 @@ class _SDMMUserDetailState extends State<SDMMUserDetail> {
       selectedTextStyle: TextStyle(color: Colors.blue),
       columnPadding: const EdgeInsets.all(8.0),
       onConfirm: (Picker picker, List value) {
-//        print(value.toString());
-//        print(picker.getSelectedValues());
+        print(value.toString());
+        print(picker.getSelectedValues());
         setState(() {
           _userInfoModel.gender = picker.getSelectedValues().first;
           _userInfoModel.genderId = value.toString();
-//          gender = "男";
-//          print(gender);
         });
       }
     );
     picker.show(_scaffoldKey.currentState);
   }
 
+  // 选择城市picker
+  showCityPicker() {
+    return;
+    // DOTO: 做 _cityJson 转 PickerItem
+    if (_cityJson == null) { return; }
+    var list = <PickerItem>[];
+    for (var item in _cityJson) {
+//      PickerItem()
+    }
+
+
+    final adapter = PickerDataAdapter(data: [
+      PickerItem(value: '男'),
+      PickerItem( value: '女'),
+    ]);
+
+    Picker picker = Picker(
+        adapter: adapter,
+        changeToFirst: false,
+        textAlign: TextAlign.left,
+        textStyle: const TextStyle(color: Colors.blue),
+        selectedTextStyle: TextStyle(color: Colors.blue),
+        columnPadding: const EdgeInsets.all(8.0),
+        onConfirm: (Picker picker, List value) {
+        print(value.toString());
+        print(picker.getSelectedValues());
+//          setState(() {
+//            _userInfoModel.gender = picker.getSelectedValues().first;
+//            _userInfoModel.genderId = value.toString();
+////          gender = "男";
+////          print(gender);
+//          });
+        }
+    );
+    picker.show(_scaffoldKey.currentState);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    // 获取本地json
+    DefaultAssetBundle.of(context).loadString('static/source/city.json').then((value){
+      _cityJson = json.decode(value);
+      print(_cityJson);
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
 
-
+//        adapter: PickerDataAdapter<String>(pickerdata: JsonDecoder().convert(PickerData)),
+//  Future<String> loadString = DefaultAssetBundle.of(context).loadString("static/source/city.json");
+//  print(loadString);
+//  List<dynamic> data;
+////  var obj = json.decode(loadString);
+//  loadString.then((String value){
+//    // 通知框架此对象的内部状态已更改
+//    data = json.decode(value);
+//  });
+//
+//  print(data);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -253,6 +316,101 @@ class _SDMMUserDetailState extends State<SDMMUserDetail> {
                   ),
                 ),
 
+                SDMMRow(
+                  dividerHidden: true,
+                  color: Colors.white,
+                  child: Row(
+                    children: <Widget>[
+                      Container(
+                        width: 100,
+//                              height: 24,
+                        padding: EdgeInsets.only(left: 15),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text('身份证号：'),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: ConstrainedBox( // 限制子组件大小
+                          constraints: BoxConstraints(
+                              maxHeight: 40,
+                              maxWidth: 200
+                          ),
+                          child: TextFormField(
+                            maxLines: 1,
+                            textAlign: TextAlign.right,
+                            decoration: InputDecoration(
+                              hintText: '请输入身份证号',
+                              enabledBorder: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.none),),
+                              focusedBorder: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.none),),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 10), // 限制内间距
+                            ),
+                            onSaved: (value) {
+                              _userInfoModel.phone = value;
+                            },
+                            validator: (String value) {
+                              return value.length > 1 ? null : '身份证最少1个字符';
+                            },
+                          ),
+                        ),
+
+                      ),
+                    ],
+                  ),
+                ),
+
+                SDMMRow(
+                  showArrow: true,
+                  showArrowPadding: EdgeInsets.only(right: 10, left: 10,),
+                  color: Colors.white,
+                  onTapDown: (TapDownDetails tap) {
+                    showPickerArray(context);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        width: 100,
+                        height: 40,
+                        padding: EdgeInsets.only(left: 15),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text('出生日期：'),
+                        ),
+                      ),
+                      Container(
+                        child: Text(_userInfoModel.date ?? '请选择出生日期'),
+                      ),
+                    ],
+                  ),
+                ),
+
+                SDMMRow(
+                  showArrow: true,
+                  showArrowPadding: EdgeInsets.only(right: 10, left: 10,),
+                  color: Colors.white,
+                  onTapDown: (TapDownDetails tap) {
+                    showCityPicker();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        width: 100,
+                        height: 40,
+                        padding: EdgeInsets.only(left: 15),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text('地址：'),
+                        ),
+                      ),
+                      Container(
+                        child: Text(_userInfoModel.address ?? '请选择地址'),
+                      ),
+                    ],
+                  ),
+                ),
 
               ],
             ),
