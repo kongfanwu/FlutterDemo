@@ -101,9 +101,6 @@ class _SDMMMyQRCodeState extends State<SDMMMyQRCode> {
                       ),
                     ),
                     child: FlatButton(
-                      onPressed: () {
-
-                      },
                       child: Text(
                         'A9b2',
                          style: TextStyle(

@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'SDMMFeedback.dart';
 import 'SDMMMyQRCode.dart';
+import 'SDMMUserDetail.dart';
 
 class SDMMMine extends StatefulWidget {
   @override
@@ -12,6 +13,9 @@ class SDMMMine extends StatefulWidget {
 typedef void RowOnTapCallback(TapDownDetails tapDownDetails);
 
 class _SDMMMineState extends State<SDMMMine> {
+
+  List <MineItemModel> items = new List();
+
   // 头部视图
   Widget createTopWidget(BuildContext context) {
     return Container(
@@ -25,48 +29,57 @@ class _SDMMMineState extends State<SDMMMine> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween, // 主轴的对齐方式
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween, // 主轴的对齐方式
-            children: <Widget>[
-              Container(
+          GestureDetector(
+            onTapDown: (TapDownDetails tapDownDetails) {
+              pushUserDetail();
+            },
+            child: Container(
+              color: Colors.white, // 加颜色，否则空白处无事件
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween, // 主轴的对齐方式
+                children: <Widget>[
+                  Container(
 //                color: Colors.red,
-                padding:
+                    padding:
                     EdgeInsets.only(left: 15, top: 15, right: 15, bottom: 15),
-                child: Image.asset(
-                  'static/img/head.png',
-                  fit: BoxFit.cover,
-                  width: 60,
-                  height: 60,
-                ),
-              ),
-              Flexible(
-                child: Container(
+                    child: Image.asset(
+                      'static/img/head.png',
+                      fit: BoxFit.cover,
+                      width: 60,
+                      height: 60,
+                    ),
+                  ),
+                  Flexible(
+                    child: Container(
 //                  color: Colors.red,
-                  padding: EdgeInsets.only(top: 10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text('售后美容师'),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                      padding: EdgeInsets.only(top: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text('顾客保有130人'),
-                          SizedBox(width: 10),
-                          Text('工作3年'),
+                          Text('售后美容师'),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Text('顾客保有130人'),
+                              SizedBox(width: 10),
+                              Text('工作3年'),
+                            ],
+                          ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.black45,
+                      size: 15
+                  ),
+                ],
               ),
-              Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.black45,
-                size: 15
-              ),
-            ],
+            ),
           ),
+
           Divider(
             height: 10,
             color: Colors.black45,
@@ -131,7 +144,7 @@ class _SDMMMineState extends State<SDMMMine> {
     );
   }
 
-  Void rowOnTap(TapDownDetails tapDownDetails, int index, List <MineItemModel> items) {
+  void rowOnTap(TapDownDetails tapDownDetails, int index, List <MineItemModel> items) {
     if (index == 1) { // 我的营销二维码
       Navigator.of(context).push(
         new MaterialPageRoute(builder: (context) {
@@ -150,16 +163,30 @@ class _SDMMMineState extends State<SDMMMine> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  // 跳转用户详情
+  void pushUserDetail() {
+    print('object');
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context){
+            return SDMMUserDetail();
+        },
+      ),
+    );
+  }
 
-    List <MineItemModel> items = new List();
+  @override
+  void initState() {
+    // TODO: implement initState
     items.add(MineItemModel(title: '邀请入驻', iconName: ''));
     items.add(MineItemModel(title: '我的营销二维码', iconName: ''));
     items.add(MineItemModel(title: '意见反馈', iconName: ''));
     items.add(MineItemModel(title: '使用帮助', iconName: ''));
     items.add(MineItemModel(title: '设置', iconName: ''));
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Container(
       color: Color.fromARGB(1, 241, 241, 241),
       child: Column(
