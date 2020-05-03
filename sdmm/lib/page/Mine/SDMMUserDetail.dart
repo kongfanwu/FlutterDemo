@@ -72,38 +72,41 @@ class _SDMMUserDetailState extends State<SDMMUserDetail> {
     picker.show(_scaffoldKey.currentState);
   }
 
+  // 创建 省、市、区 数据
+  List <PickerItem> itemListFromAddressList(addressList) {
+    if (addressList == null) { return null; }
+    var itemArray = <PickerItem>[];
+    // 递归创建 省、市、区 model
+    for (var itemMap in addressList) {
+      if (itemMap['children'] != null) {
+        var children = itemListFromAddressList(itemMap['children']);
+        itemArray.add(PickerItem(value: itemMap['name'], children: children));
+      } else {
+        itemArray.add(PickerItem(value: itemMap['name']));
+      }
+    }
+    return itemArray;
+  }
+
   // 选择城市picker
   showCityPicker() {
-    return;
-    // DOTO: 做 _cityJson 转 PickerItem
-    if (_cityJson == null) { return; }
-    var list = <PickerItem>[];
-    for (var item in _cityJson) {
-//      PickerItem()
-    }
-
-
-    final adapter = PickerDataAdapter(data: [
-      PickerItem(value: '男'),
-      PickerItem( value: '女'),
-    ]);
-
+    var items = itemListFromAddressList(_cityJson);
     Picker picker = Picker(
-        adapter: adapter,
+        adapter: PickerDataAdapter(data: items),
         changeToFirst: false,
         textAlign: TextAlign.left,
         textStyle: const TextStyle(color: Colors.blue),
         selectedTextStyle: TextStyle(color: Colors.blue),
         columnPadding: const EdgeInsets.all(8.0),
         onConfirm: (Picker picker, List value) {
-        print(value.toString());
-        print(picker.getSelectedValues());
-//          setState(() {
-//            _userInfoModel.gender = picker.getSelectedValues().first;
-//            _userInfoModel.genderId = value.toString();
-////          gender = "男";
-////          print(gender);
-//          });
+          print(value.toString());
+          print(picker.getSelectedValues());
+          setState(() {
+            var addressList = picker.getSelectedValues();
+            if (addressList.length == 3) {
+              _userInfoModel.address = addressList[0] + '-' + addressList[1] + '-' + addressList[2];
+            }
+          });
         }
     );
     picker.show(_scaffoldKey.currentState);
@@ -116,26 +119,13 @@ class _SDMMUserDetailState extends State<SDMMUserDetail> {
     // 获取本地json
     DefaultAssetBundle.of(context).loadString('static/source/city.json').then((value){
       _cityJson = json.decode(value);
-      print(_cityJson);
+//      print(_cityJson);
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-
-//        adapter: PickerDataAdapter<String>(pickerdata: JsonDecoder().convert(PickerData)),
-//  Future<String> loadString = DefaultAssetBundle.of(context).loadString("static/source/city.json");
-//  print(loadString);
-//  List<dynamic> data;
-////  var obj = json.decode(loadString);
-//  loadString.then((String value){
-//    // 通知框架此对象的内部状态已更改
-//    data = json.decode(value);
-//  });
-//
-//  print(data);
-
     return Scaffold(
       key: _scaffoldKey,
       appBar: new AppBar(
