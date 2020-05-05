@@ -25,6 +25,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   flutter_datetime_picker: ^1.3.8 # https://pub.flutter-io.cn/packages/flutter_datetime_picker
   flutter_picker: ^1.1.3 # https://pub.flutter-io.cn/packages/flutter_picker
+  dio: 3.0.0 # https://github.com/flutterchina/dio/blob/master/README-ZH.md
 
 dev_dependencies:
   flutter_test:
