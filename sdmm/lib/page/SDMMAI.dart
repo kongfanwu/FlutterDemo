@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sdmm/networking/JsonSerializableDemo.dart';
 
 class SDMMAI extends StatefulWidget {
   @override
@@ -9,7 +10,12 @@ class _SDMMAIState extends State<SDMMAI> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text('AI'),
+      child: new RaisedButton(
+        onPressed: () {
+          JsonSerializableDemo('kong');
+        },
+        child: new Text('Get IP address'),
+      ),
     );
   }
 }
