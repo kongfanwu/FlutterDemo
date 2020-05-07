@@ -12,7 +12,7 @@ class _SDMMAIState extends State<SDMMAI> {
     return Center(
       child: new RaisedButton(
         onPressed: () {
-          JsonSerializableDemo('kong');
+          JsonSerializableDemo();
         },
         child: new Text('Get IP address'),
       ),
