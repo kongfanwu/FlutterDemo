@@ -11,9 +11,7 @@ class _SDMMWorkState extends State<SDMMWork> {
   List dataList = new List();
 
   void _getIPAddress() {
-    print('-------------------');
-    DioManager.getInstance().get('data/cityinfo/101010100.html',
-        successCallBack: (data) {
+    DioManager.getInstance().get('http://www.weather.com.cn/data/cityinfo/101010100.html', successCallBack: (data) {
       setState(() {
         dataList = (data['weatherinfo'] as Map).values.toList();
       });
@@ -29,6 +27,7 @@ class _SDMMWorkState extends State<SDMMWork> {
             onPressed: () {
               _getIPAddress();
             },
+
             child: new Text('Get IP address'),
           ),
           Container(

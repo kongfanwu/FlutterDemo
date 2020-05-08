@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'SDMMFeedback.dart';
 import 'SDMMMyQRCode.dart';
 import 'SDMMUserDetail.dart';
+import 'weather.dart';
 
 class SDMMMine extends StatefulWidget {
   @override
@@ -161,6 +162,14 @@ class _SDMMMineState extends State<SDMMMine> {
         ),
       );
     }
+    else if (index == 5) { // 天气
+      Navigator.of(context).push(
+        new MaterialPageRoute(builder: (context) {
+          return Weather(navBarTitle: items[index].title,); // push
+        },
+        ),
+      );
+    }
   }
 
   // 跳转用户详情
@@ -182,6 +191,7 @@ class _SDMMMineState extends State<SDMMMine> {
     items.add(MineItemModel(title: '意见反馈', iconName: ''));
     items.add(MineItemModel(title: '使用帮助', iconName: ''));
     items.add(MineItemModel(title: '设置', iconName: ''));
+    items.add(MineItemModel(title: '天气预报', iconName: ''));
     super.initState();
   }
 

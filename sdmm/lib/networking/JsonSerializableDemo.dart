@@ -7,8 +7,25 @@ class JsonSerializableDemo {
   JsonSerializableDemo() {
     var userMap = {
       "name": "John Smith",
-       "email": "john@example.com",
-       "id": "123456",
+      "email": "john@example.com",
+      "id": "123456",
+      "image": {
+        "url" : "url12345",
+        "width": 20.1,
+        "height": 21,
+      },
+      "images": [
+        {
+          "url" : "url12345",
+          "width": 20.1,
+          "height": 21,
+        },
+        {
+          "url" : "url12346",
+          "width": 20.1,
+          "height": 21,
+        },
+      ]
     };
 
     var user = new User.fromJson(userMap);
@@ -18,6 +35,10 @@ class JsonSerializableDemo {
     print('jsonStr =' + jsonStr);
     print('Map = ');
     print(json.decode(jsonStr));
+    print(user.date);
+    print(user.image.width);
+    print(user.image.height);
+    print(user.images);
   }
 
 }

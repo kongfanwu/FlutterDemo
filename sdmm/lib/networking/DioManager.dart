@@ -5,7 +5,7 @@ import 'package:sdmm/public/GlobalConfig.dart';
 // 作者 https://www.jianshu.com/p/edb5bae85732
 
 /* 使用示例
-Map<String, dynamic> params = FormData.from({ 'key': 'value'});
+Map<String, dynamic> params = { 'key': 'value'};
 
 DioManager.getInstance().get('/user/list/getInfo', params, (data) {
 },(error){
@@ -34,12 +34,12 @@ class DioManager {
   Dio dio = new Dio();
   DioManager() {
     // Set default configs
-    dio.options.headers = {
+//    dio.options.headers = {
 //      "version":'2.0.9',
 //      "Authorization":'_token',
-    };
+//    };
     http://www.weather.com.cn/data/cityinfo/101010100.html
-    dio.options.baseUrl = "http://www.weather.com.cn/";
+//    dio.options.baseUrl = "http://wthrcdn.etouch.cn/";
     dio.options.connectTimeout = 5000;
     dio.options.receiveTimeout = 3000;
     dio.options.responseType = ResponseType.json;
@@ -69,8 +69,10 @@ class DioManager {
     try {
       if (method == 'get') {
         if (params != null) {
+          print('get---------------params');
           response = await dio.get(url, queryParameters: params);
         } else {
+          print('get---------------');
           response = await dio.get(url);
         }
       } else if (method == 'post') {
