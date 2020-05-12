@@ -5,12 +5,16 @@ import './page/SDMMWork.dart';
 import './page/SDMMApply.dart';
 import 'page/Mine/SDMMMine.dart';
 
+import 'package:flutter/rendering.dart'; // 可视化视图调试库
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+//    debugPaintSizeEnabled = true;// 可视方式调试布局问题
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',

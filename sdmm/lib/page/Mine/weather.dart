@@ -61,6 +61,10 @@ class _WeatherState extends State<Weather> {
         title: new Text(widget.navBarTitle),
         actions: <Widget>[
           DropdownButton(
+            focusColor: Colors.orange,
+            iconDisabledColor:Colors.white,
+            iconEnabledColor: Colors.white,
+//            style: TextStyle(color: Colors.white, decorationColor: Colors.orange, backgroundColor: Colors.black),
             value: _dropValue,
             items: _dropdownDataList,
             onChanged: (value) {
