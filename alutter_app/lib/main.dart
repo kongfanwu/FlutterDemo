@@ -18,6 +18,8 @@ import 'StackClass.dart';
 import 'dataTableClass.dart';
 import 'listViewLoading.dart';
 import 'inheritedWidgetDemo.dart';
+import 'package:alutter_app/custom_widgets/gradient_button.dart';
+import 'future_builder_class.dart';
 
 void main() => runApp(MyApp());
 
@@ -80,13 +82,17 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
 
+    void onTap() {
+      print('print');
+    }
+
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: InheritedWidgetTestRoute(),
+      body: futureBuilderClass(),
     );
   }
 }
