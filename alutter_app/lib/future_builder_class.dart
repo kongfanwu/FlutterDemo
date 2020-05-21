@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
@@ -9,6 +10,7 @@ class futureBuilderClass extends StatefulWidget {
 class _futureBuilderClassState extends State<futureBuilderClass> {
 
   var _future = Future.delayed(Duration(seconds: 3), () {
+//    return Future.error(error)
     return '老孟，一个有态度的程序员';
   });
 
@@ -52,11 +54,34 @@ class _futureBuilderClassState extends State<futureBuilderClass> {
     );
   }
 
-  Widget createFutureBuilder2() {
+  Dio _dio = new Dio();
 
+  Widget createFutureBuilder2() {
+    return FutureBuilder(
+        future: _dio.get("https://api.github.com/orgs/flutterchina/repos"),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          //请求完成
+          if (snapshot.connectionState == ConnectionState.done) {
+            Response response = snapshot.data;
+            //发生错误
+            if (snapshot.hasError) {
+              return Text(snapshot.error.toString());
+            }
+            //请求成功，通过项目信息构建用于显示项目名称的ListView
+            return ListView(
+              children: response.data.map<Widget>((e) =>
+                  ListTile(title: Text(e["full_name"]))
+              ).toList(),
+            );
+          }
+          //请求未完成时弹出loading
+          return CircularProgressIndicator();
+        }
+    );
   }
   @override
   Widget build(BuildContext context) {
-    return createFutureBuilder1();
+
+    return createFutureBuilder2();
   }
 }

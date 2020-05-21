@@ -1,29 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:alutter_app/TextClass.dart';
-import 'package:alutter_app/ButtonClass.dart';
-//import 'package:alutter_app/ImageClass.dart';
-import 'ImageClass.dart';
-import 'MyDropDownButton.dart';
-import 'SwitchAndCheckboxComponent.dart';
-import 'TextFiedlClass.dart';
-import 'FormClass.dart';
-import 'ExpandedClass.dart';
-import 'AlertDialogClass.dart';
-import 'Align_CenterClass.dart';
-import 'Column_RowClass.dart';
-import 'ContainersClass.dart';
-import 'LoadingClass.dart';
-import 'GridViewClass.dart';
-import 'StackClass.dart';
-import 'dataTableClass.dart';
-import 'listViewLoading.dart';
-import 'inheritedWidgetDemo.dart';
-import 'package:alutter_app/custom_widgets/gradient_button.dart';
-import 'future_builder_class.dart';
-import 'provider_demo/provider_app.dart';
 
-//void main() => runApp(MyApp());
-void main() => runApp((ProviderMyApp()));
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -44,7 +21,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
-
     );
   }
 }
@@ -83,19 +59,53 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
-    void onTap() {
-      print('print');
-    }
-
+    // This method is rerun every time setState is called, for instance as done
+    // by the _incrementCounter method above.
+    //
+    // The Flutter framework has been optimized to make rerunning build methods
+    // fast, so that you can just rebuild anything that needs updating rather
+    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: futureBuilderClass(),
+      body: Center(
+        // Center is a layout widget. It takes a single child and positions it
+        // in the middle of the parent.
+        child: Column(
+          // Column is also a layout widget. It takes a list of children and
+          // arranges them vertically. By default, it sizes itself to fit its
+          // children horizontally, and tries to be as tall as its parent.
+          //
+          // Invoke "debug painting" (press "p" in the console, choose the
+          // "Toggle Debug Paint" action from the Flutter Inspector in Android
+          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+          // to see the wireframe for each widget.
+          //
+          // Column has various properties to control how it sizes itself and
+          // how it positions its children. Here we use mainAxisAlignment to
+          // center the children vertically; the main axis here is the vertical
+          // axis because Columns are vertical (the cross axis would be
+          // horizontal).
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'You have pushed the button this many times:',
+            ),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.display1,
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
-
