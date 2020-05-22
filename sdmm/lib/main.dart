@@ -4,8 +4,9 @@ import './page/SDMMAI.dart';
 import './page/SDMMWork.dart';
 import './page/SDMMApply.dart';
 import 'page/Mine/SDMMMine.dart';
-
+import 'package:flui/flui.dart';
 import 'package:flutter/rendering.dart'; // 可视化视图调试库
+
 
 void main() => runApp(MyApp());
 
@@ -15,6 +16,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
 //    debugPaintSizeEnabled = true;// 可视方式调试布局问题
 
+    FLToastDefaults _toastDefaults = FLToastDefaults();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -22,7 +25,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         primaryColor: Colors.red,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: FLToastProvider( // 包裹吐司提示
+        child: MyHomePage(title: 'Flutter Demo Home Page')
+      ),
     );
   }
 }
@@ -36,7 +41,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var _title = '';
-  int _currentIndex = 4;
+  int _currentIndex = 0;
   List pages = [
     SDMMMessage(),
     SDMMAI(),
