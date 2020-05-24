@@ -18,6 +18,10 @@ import 'GridViewClass.dart';
 import 'StackClass.dart';
 import 'dataTableClass.dart';
 import 'wrap_flow.dart';
+import 'listViewLoading.dart';
+import 'inheritedWidgetDemo.dart';
+import 'package:alutter_app/providerDemo/providerClass.dart';
+import 'futureBuilderClass.dart';
 
 void main() => runApp(MyApp());
 
@@ -86,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: WrapFlow(),
+      body: FWFutureBuilder(),
     );
   }
 }
