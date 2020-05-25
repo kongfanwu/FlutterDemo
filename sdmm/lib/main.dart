@@ -28,14 +28,22 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.red,
       ),
       home: FLToastProvider( // 包裹吐司提示
-        child: MultiProvider(
+        child: MultiProvider( // 状态共享管理
           providers: [
-            ChangeNotifierProvider(create: (_) => _userModel),
+            ChangeNotifierProvider(create: (_) => _userModel), // 共享的对象
           ],
-          child: !_userModel.isLogin ? Login() : MyHomePage(title: 'Flutter Demo Home Page'),
+        child: FWContent(),
         ),
       ),
     );
+  }
+}
+
+class FWContent extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final userModel = context.watch<UserModel>();
+    return !userModel.isLogin ? Login() : MyHomePage(title: 'Flutter Demo Home Page');
   }
 }
 
@@ -95,3 +103,5 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+

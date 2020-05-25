@@ -18,6 +18,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
         ?.map((e) =>
             e == null ? null : JoinModel.fromJson(e as Map<String, dynamic>))
         ?.toList(),
+    json['isLogin'] as bool,
   );
 }
 
@@ -29,6 +30,7 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'password': instance.password,
       'token': instance.token,
       'join_code': instance.join_code,
+      'isLogin': instance.isLogin,
     };
 
 JoinModel _$JoinModelFromJson(Map<String, dynamic> json) {

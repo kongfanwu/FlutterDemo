@@ -57,7 +57,9 @@ flutter:
     - static/img/qrcode_bg.png
     - static/img/qrcode_btnbg.png
     - static/img/qrcode_jixiangwu.png
+    - static/img/login_logo.png
     - static/source/city.json
+
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

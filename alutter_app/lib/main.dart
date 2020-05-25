@@ -27,7 +27,7 @@ import 'future_builder_class.dart';
 import 'provider_demo/provider_app.dart';
 
 //void main() => runApp(MyApp());
-void main() => runApp((ProviderMyApp()));
+void main() => runApp((MyApp()));
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -98,11 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-<<<<<<< HEAD
-      body: FWFutureBuilder(),
-=======
-      body: futureBuilderClass(),
->>>>>>> 89133d8e3585bf24c84ce22619031d7baf8fed5e
+      body: FormClass(),
     );
   }
 }

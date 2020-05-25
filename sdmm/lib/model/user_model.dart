@@ -24,7 +24,7 @@ class UserModel with ChangeNotifier  {
 
   void setIsLogin(bool isLogin) {
     this.isLogin = isLogin;
-    notifyListeners();
+    notifyListeners(); // 发布更新通知
   }
 }
 
