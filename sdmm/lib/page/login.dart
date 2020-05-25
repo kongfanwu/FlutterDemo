@@ -24,21 +24,19 @@ class _LoginState extends State<Login> {
   TextEditingController _phoneController = new TextEditingController();
   TextEditingController _pwdController = new TextEditingController();
   GlobalKey _formKey= new GlobalKey<FormState>();
+  TapGestureRecognizer _xieyiTap = new TapGestureRecognizer();
+  TapGestureRecognizer _tiaokuanTap = new TapGestureRecognizer();
+  var _loginEnable = false;
 
-  @override
-  Widget build(BuildContext context) {
-    TapGestureRecognizer _xieyiTap = new TapGestureRecognizer();
-    TapGestureRecognizer _tiaokuanTap = new TapGestureRecognizer();
-
-    /* 登录 */
-    void loginClick() {
-      // 校验数据
-      if ((_formKey.currentState as FormState).validate()) {
+  /* 登录 */
+  void loginClick() {
+    // 校验数据
+    if ((_formKey.currentState as FormState).validate()) {
         final url = 'v5.login/index';
         Map<String, dynamic> params = {};
         params['account'] = _phoneController.text;
         params['password'] = Tool.xmhMD5(_pwdController.text);
-        var dismiss = FLToast.loading(text: 'Loading...');
+        var dismiss = FLToast.loading(text:'登录中...');
         DioManager.getInstance().post(url, params, (data) {
           dismiss();
           final loginUser = UserModel.fromJson(data['data']);
@@ -51,20 +49,45 @@ class _LoginState extends State<Login> {
           user.password = loginUser.password;
           user.token = loginUser.token;
           user.join_code = loginUser.join_code;
-          user.setIsLogin(true);
+          FLToast.showText(text:'登录成功', onDismissed: (){
+            user.setIsLogin(true); // 出发通知登录
+          });
         }, (error) {
           dismiss();
         });
-      }
     }
+  }
 
-    @override
-    void dispose() {
-      //用到GestureRecognizer的话一定要调用其dispose方法释放资源
-      _xieyiTap.dispose();
-      _tiaokuanTap.dispose();
-      super.dispose();
-    }
+  void validateForm() {
+    setState(() {
+      _loginEnable = (_formKey.currentState as FormState).validate();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+//    _phoneController.text = '18600004444';
+//    _pwdController.text = '888888';
+
+//    _phoneController.addListener(() {
+//      validateForm();
+//    });
+//    _pwdController.addListener(() {
+//      validateForm();
+//    });
+  }
+
+  @override
+  void dispose() {
+    //用到GestureRecognizer的话一定要调用其dispose方法释放资源
+    _xieyiTap.dispose();
+    _tiaokuanTap.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     return Scaffold(
 //      resizeToAvoidBottomInset: false, // 这种方法大部分是为了不让软键盘挤压导致页面Widget 变形。并且没有挤压警告。但是会有遮挡问题。所以不采用。
@@ -72,13 +95,14 @@ class _LoginState extends State<Login> {
         color: Colors.white,
         child: SingleChildScrollView(
           child: Container(
-            color: Colors.blue,
+            height: MediaQuery.of(context).size.height,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                SizedBox(height: 100,),
+                SizedBox(height: 1,),
                 Image.asset('static/img/login_logo.png', fit: BoxFit.cover, width: 296/3, height: 405/3,),
                 Padding(
-                  padding: EdgeInsets.only(left: 40, right: 40, top: 40),
+                  padding: EdgeInsets.only(left: 40, right: 40, top: 0),
                   child: Form(
                     key: _formKey,
                     autovalidate: true,
@@ -99,6 +123,9 @@ class _LoginState extends State<Login> {
                             return val.trim().length == 11 ? null : '请输入用户名';
                           },
                           controller: _phoneController,
+                          onChanged: (val) {
+                            validateForm();
+                          },
                         ),
                         TextFormField(
                           autofocus: true,
@@ -112,12 +139,15 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           validator: (val) {
-                            return val.trim().length > 1  ? null : '密码格式不对';
+                            return val.trim().length == 6  ? null : '密码格式不对';
                           },
                           controller: _pwdController,
+                          onChanged: (val) {
+                            validateForm();
+                          },
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 30),
+                          padding: const EdgeInsets.only(top: 50),
                           child: Row(
                             children: <Widget>[
                               Expanded(
@@ -125,7 +155,7 @@ class _LoginState extends State<Login> {
                                 child: RaisedButton(
                                   child: Text('登录'),
                                   textColor: Colors.white,
-                                  color: Theme.of(context).primaryColor,
+                                  color: _loginEnable ? Theme.of(context).primaryColor : Colors.grey,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                                   onPressed: loginClick,
                                 ),
@@ -137,39 +167,36 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ),
-//              Expanded(
-//                flex: 1,
-//                child: Container(
-//                  padding: const EdgeInsets.only(bottom: 34),
-//                  child: Align(
-//                    alignment: Alignment.bottomCenter,
-//                    child: Text.rich(TextSpan(
-//                        children: [
-//                          TextSpan(
-//                            text: '登录即表示同意',
-//                            style: TextStyle(fontSize: 12),),
-//                          TextSpan(
-//                              text: '神灯妈妈用户协议',
-//                              style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12),
-//                              recognizer: _xieyiTap..onTap = () {
-//                                print('神灯妈妈用户协议');
-//                              }
-//                          ),
-//                          TextSpan(
-//                              text: '和',
-//                              style: TextStyle(fontSize: 12)),
-//                          TextSpan(
-//                              text: '隐藏条款',
-//                              style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12),
-//                              recognizer: _tiaokuanTap..onTap = () {
-//                                print('隐藏条款');
-//                              }
-//                          ),
-//                        ]
-//                    )),
-//                  ),
-//                ),
-//              ),
+                SizedBox(height: 1,),
+                Container(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Text.rich(TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '登录即表示同意',
+                            style: TextStyle(fontSize: 12),),
+                          TextSpan(
+                              text: '神灯妈妈用户协议',
+                              style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12),
+                              recognizer: _xieyiTap..onTap = () {
+                                print('神灯妈妈用户协议');
+                              }
+                          ),
+                          TextSpan(
+                              text: '和',
+                              style: TextStyle(fontSize: 12)),
+                          TextSpan(
+                              text: '隐藏条款',
+                              style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12),
+                              recognizer: _tiaokuanTap..onTap = () {
+                                print('隐藏条款');
+                              }
+                          ),
+                        ]
+                    )),
+                  ),
+                ),
               ],
             ),
           ),
