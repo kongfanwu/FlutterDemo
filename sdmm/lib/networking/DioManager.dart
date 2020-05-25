@@ -1,6 +1,9 @@
 import 'package:dio/dio.dart';
 import 'dart:convert';
 import 'package:sdmm/public/GlobalConfig.dart';
+import 'package:sdmm/public/log_util.dart';
+import 'dart:math';
+import 'package:sdmm/public/tool.dart';
 
 // 作者 https://www.jianshu.com/p/edb5bae85732
 
@@ -39,7 +42,7 @@ class DioManager {
 //      "Authorization":'_token',
 //    };
     http://www.weather.com.cn/data/cityinfo/101010100.html
-//    dio.options.baseUrl = "http://wthrcdn.etouch.cn/";
+    dio.options.baseUrl = "http://pc.test.api.shendengzhineng.com/index.php/";
     dio.options.connectTimeout = 5000;
     dio.options.receiveTimeout = 3000;
     dio.options.responseType = ResponseType.json;
@@ -66,13 +69,13 @@ class DioManager {
 
   _requstHttp(String url, String method, { Map params, Function successCallBack, Function errorCallBack }) async {
     Response response;
+    final reqUrl = dio.options.baseUrl + url;
+    params = configBaseParams(params, reqUrl);
     try {
       if (method == 'get') {
         if (params != null) {
-          print('get---------------params');
           response = await dio.get(url, queryParameters: params);
         } else {
-          print('get---------------');
           response = await dio.get(url);
         }
       } else if (method == 'post') {
@@ -119,12 +122,14 @@ class DioManager {
       }
       if (response != null) {
         print('返回参数: ' + response.toString());
+//        LogUtil.d('返回参数: ' + response.toString());
       }
       print('👈 👈 👈 👈');
     }
 //    String dataStr = json.encode(response.data);
 //    Map<String, dynamic> dataMap = json.decode(dataStr);
-    var dataMap = json.decode(response.data);
+
+    var dataMap = response.data; //json.decode(response.data);
     if (dataMap == null) {
       _error(
           errorCallBack,
@@ -141,6 +146,52 @@ class DioManager {
     if (errorCallBack != null) {
       errorCallBack(error);
     }
+  }
+
+  Map<String, dynamic> configBaseParams(Map<String, dynamic> params, String url) {
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final timestampHaoMiao = timestamp / 1000;
+
+    params['device_token'] = '';
+
+    //    params['token'] = ''; // 登录不需要，其他接口需要
+    params['cnmtp'] = '1';
+    params['join_code'] = '';
+
+    params['timestamp'] = timestampHaoMiao.toInt().toString();
+    params['nonce'] = '$timestamp${Random().nextInt(100000)}';
+    params['url'] = url;
+    params['sign'] = _getSigWithParams(params);
+    params['url'] = null; // sign完 移除掉
+    return params;
+  }
+
+  /* 根据加密规则，获取sign */
+  String _getSigWithParams(Map<String, dynamic> params) {
+    // 1 1 key 字母大小排序
+    List keys = params.keys.toList();
+    keys.sort();
+
+    // 2 移除value 为空字符串的键值对 3  键值对用 = 链接，放到数组里
+    List signList = new List();
+    for (String e in keys) {
+      if (!(params[e] == null || params[e] == '')) {
+        signList.add('${e}=${params[e]}');
+      }
+    }
+
+    // 4 数组里的字符串 用&链接成大字符串 5 appKey(U7doak7fl4da45d) 与第4步拼接 得到sig1
+    var signString = 'U7doak7fl4da45d';
+    for (var i = 0; i < signList.length; i++) {
+      if (i == signList.length - 1) {
+        signString += signList[i];
+      } else {
+        signString += '${signList[i]}&';
+      }
+    }
+    // 6  sig1 2次MD5  得到 sig
+    final sign = Tool.xmhMD5(Tool.xmhMD5(signString));
+    return sign;
   }
 }
 
