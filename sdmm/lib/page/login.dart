@@ -49,9 +49,8 @@ class _LoginState extends State<Login> {
           user.password = loginUser.password;
           user.token = loginUser.token;
           user.join_code = loginUser.join_code;
-          FLToast.showText(text:'登录成功', onDismissed: (){
-            user.setIsLogin(true); // 出发通知登录
-          });
+          user.setIsLogin(true); // 出发通知登录
+          FLToast.showText(text:'登录成功', onDismissed: (){});
         }, (error) {
           dismiss();
         });
@@ -67,9 +66,9 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-//    _phoneController.text = '18600004444';
-//    _pwdController.text = '888888';
-
+    _phoneController.text = '18600004444';
+    _pwdController.text = '888888';
+    _loginEnable = true;
 //    _phoneController.addListener(() {
 //      validateForm();
 //    });
@@ -109,9 +108,10 @@ class _LoginState extends State<Login> {
                     child: Column(
                       children: <Widget>[
                         TextFormField(
-                          autofocus: true,
+                          autofocus: false,
+                          keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
-                            hintText: '请输入用户名',
+                            hintText: '请输入手机号',
                             enabledBorder: UnderlineInputBorder( // 没有焦点时将起作用
                               borderSide: BorderSide(color: Colors.grey),
                             ),
@@ -120,7 +120,7 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           validator: (val) {
-                            return val.trim().length == 11 ? null : '请输入用户名';
+                            return val.trim().length == 11 ? null : '请输入手机号';
                           },
                           controller: _phoneController,
                           onChanged: (val) {
@@ -128,7 +128,8 @@ class _LoginState extends State<Login> {
                           },
                         ),
                         TextFormField(
-                          autofocus: true,
+                          autofocus: false,
+                          keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             hintText: '请输入密码',
                             enabledBorder: UnderlineInputBorder( // 没有焦点时将起作用
@@ -155,9 +156,9 @@ class _LoginState extends State<Login> {
                                 child: RaisedButton(
                                   child: Text('登录'),
                                   textColor: Colors.white,
-                                  color: _loginEnable ? Theme.of(context).primaryColor : Colors.grey,
+                                  color: Theme.of(context).primaryColor,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                  onPressed: loginClick,
+                                  onPressed: _loginEnable ? loginClick : null,
                                 ),
                               )
                             ],

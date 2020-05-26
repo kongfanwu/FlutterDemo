@@ -58,6 +58,8 @@ flutter:
     - static/img/qrcode_btnbg.png
     - static/img/qrcode_jixiangwu.png
     - static/img/login_logo.png
+    - static/img/yingyong_dingdanguanli.png
+    - static/img/xiaoshouzhidan.png
     - static/source/city.json
 
   #  - images/a_dot_ham.jpeg
