@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sdmm/public/item_model.dart';
+import 'service_order.dart';
 
 class OrderManager extends StatefulWidget {
   OrderManager({this.navBarTitle});
@@ -11,20 +12,21 @@ class OrderManager extends StatefulWidget {
 class _OrderManagerState extends State<OrderManager> {
   List<ItemModel> _dataList = new List();
   ScrollController _controller = new ScrollController();
+  double _left = 0;
 
   void itemOnTap(ItemModel itemModel) {
     print(itemModel.title);
-//    if (itemModel.id == '1') {
-//      Navigator.of(context).push(
-//        new MaterialPageRoute(
-//          builder: (context) {
-//            return OrderManager(
-//              navBarTitle: itemModel.title,
-//            ); // push
-//          },
-//        ),
-//      );
-//    }
+    if (itemModel.id == '0') {
+      Navigator.of(context).push(
+        new MaterialPageRoute(
+          builder: (context) {
+            return ServiceOrder(
+              navBarTitle: '服务订单',
+            ); // push
+          },
+        ),
+      );
+    }
   }
 
   Widget createItemWidget(ItemModel itemModel) {
@@ -65,9 +67,16 @@ class _OrderManagerState extends State<OrderManager> {
           imageName: 'static/img/xiaoshouzhidan.png'));
     }
     _controller.addListener(() {
-      print(_controller.offset); //打印滚动位置
+//      ScrollPositionWithSingleContext#fb2d8(offset: 315.0, range: 0.0..315.0, viewport: 355.0, ScrollableState, BouncingScrollPhysics, IdleScrollActivity#c6972, ScrollDirection.idle)
+      ScrollPositionWithSingleContext pos = _controller.position;
+      // pos.viewportDimension 显示视口大小
+      // pos.pixels 当前便宜位置
+      // pos.maxScrollExtent 可偏移最大数
+      double scale = pos.pixels / pos.maxScrollExtent;
+      setState(() {
+        _left = (150 - 50) * scale;
+      });
     });
-
   }
 
   @override
@@ -107,7 +116,32 @@ class _OrderManagerState extends State<OrderManager> {
                   ),
                   Container(
                     height: 10,
-                    color: Colors.red,
+//                    color: Colors.red,
+                    child:Stack(
+                      alignment:Alignment.center , //指定未定位或部分定位widget的对齐方式
+                      children: <Widget>[
+                        Container(
+                            height: 10,
+                            width: 150,
+                            decoration: BoxDecoration(
+                              color: Colors.orange,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                        ),
+                        AnimatedPositioned(
+                          duration: Duration(seconds: 0),
+                          left: _left,
+                          child: Container(
+                            height: 10,
+                            width: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ],
               ),

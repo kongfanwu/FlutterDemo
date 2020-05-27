@@ -18,7 +18,7 @@ class _SDMMApplyState extends State<SDMMApply> {
   List<ItemModel> _dataList = new List();
 
   void itemOnTap(ItemModel itemModel) {
-    print(itemModel.title);
+    print(itemModel.id);
     if (itemModel.id == '1') {
       Navigator.of(context).push(
         new MaterialPageRoute(
