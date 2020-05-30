@@ -10,12 +10,11 @@ import 'package:sdmm/public/tool.dart';
 /* 使用示例
 Map<String, dynamic> params = { 'key': 'value'};
 
-DioManager.getInstance().get('/user/list/getInfo', params, (data) {
-},(error){
-});
+DioManager.getInstance().post('', params: params, successCallBack: (data, success) {
+}, errorCallBack: (e){
 
-DioManager.getInstance().post('url', params, (data) {
-}, (error) {
+});
+DioManager.getInstance().post('', params: params, successCallBack: (data, success) {
 });
 * */
 
@@ -62,8 +61,8 @@ class DioManager {
   }
 
   //post请求
-  post(String url, params, Function successCallBack,
-      Function errorCallBack) async {
+  post(String url, {params, Function successCallBack,
+      Function errorCallBack}) async {
     _requstHttp(url, 'post', params: params, successCallBack: successCallBack, errorCallBack: errorCallBack);
   }
 
@@ -107,9 +106,10 @@ class DioManager {
         print('请求异常: ' + error.toString());
         print('请求异常url: ' + url);
         print('请求头: ' + dio.options.headers.toString());
-        print('method: ' + dio.options.method);
+//        print('method: ' + dio.options.method);
       }
       _error(errorCallBack, error.message);
+      successCallBack(null, false);
       return '';
     }
     // debug模式打印相关数据
@@ -137,8 +137,9 @@ class DioManager {
               dataMap['errorCode'].toString() +
               '，' +
               response.data.toString());
+      successCallBack(null, false);
     } else if (successCallBack != null) {
-      successCallBack(dataMap);
+      successCallBack(dataMap, true);
     }
   }
 

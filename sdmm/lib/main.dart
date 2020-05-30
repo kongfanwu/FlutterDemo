@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
 //    debugPaintSizeEnabled = true;// 可视方式调试布局问题
 
-    final _userModel = UserModel(null, null, null, null, null, null, null, true);
+    final _userModel = UserModel(null, null, null, null, null, null, null, false);
     FLToastDefaults _toastDefaults = FLToastDefaults();
 
     return MaterialApp(

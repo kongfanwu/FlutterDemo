@@ -18,15 +18,15 @@ class _SDMMMessageState extends State<SDMMMessage> {
     params['account'] = '18600004444';
     params['password'] = '21218cca77804d2ba1922c33e0151105';
     var dismiss = FLToast.loading(text: 'Loading...');
-    DioManager.getInstance().post(url, params, (data) {
-      dismiss();
-      print(data);
-      final user = UserModel.fromJson(data['data']);
-      print(user.name);
-    }, (error) {
-      dismiss();
-      print(error);
-    });
+//    DioManager.getInstance().post(url, params, (data) {
+//      dismiss();
+//      print(data);
+//      final user = UserModel.fromJson(data['data']);
+//      print(user.name);
+//    }, (error) {
+//      dismiss();
+//      print(error);
+//    });
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sdmm/public/item_model.dart';
+import 'package:sdmm/public/tool_model.dart';
 import 'service_order.dart';
+import 'sale_order.dart';
 
 class OrderManager extends StatefulWidget {
   OrderManager({this.navBarTitle});
@@ -22,6 +23,16 @@ class _OrderManagerState extends State<OrderManager> {
           builder: (context) {
             return ServiceOrder(
               navBarTitle: '服务订单',
+            ); // push
+          },
+        ),
+      );
+    } else if (itemModel.id == '1') {
+      Navigator.of(context).push(
+        new MaterialPageRoute(
+          builder: (context) {
+            return SaleOrder(
+              navBarTitle: '销售订单',
             ); // push
           },
         ),
@@ -61,10 +72,17 @@ class _OrderManagerState extends State<OrderManager> {
     // TODO: implement initState
     super.initState();
     for (var i = 0; i < 8; i++) {
-      _dataList.add(ItemModel(
-          id: i.toString(),
-          title: '服务制单$i',
-          imageName: 'static/img/xiaoshouzhidan.png'));
+      if (i == 1) {
+        _dataList.add(ItemModel(
+            id: i.toString(),
+            title: '销售制单$i',
+            imageName: 'static/img/xiaoshouzhidan.png'));
+      } else {
+        _dataList.add(ItemModel(
+            id: i.toString(),
+            title: '服务制单$i',
+            imageName: 'static/img/xiaoshouzhidan.png'));
+      }
     }
     _controller.addListener(() {
 //      ScrollPositionWithSingleContext#fb2d8(offset: 315.0, range: 0.0..315.0, viewport: 355.0, ScrollableState, BouncingScrollPhysics, IdleScrollActivity#c6972, ScrollDirection.idle)

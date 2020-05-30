@@ -37,7 +37,7 @@ class _LoginState extends State<Login> {
         params['account'] = _phoneController.text;
         params['password'] = Tool.xmhMD5(_pwdController.text);
         var dismiss = FLToast.loading(text:'登录中...');
-        DioManager.getInstance().post(url, params, (data) {
+        DioManager.getInstance().post(url, params: params, successCallBack: (data, success) {
           dismiss();
           final loginUser = UserModel.fromJson(data['data']);
           final user = context.read<UserModel>();
@@ -51,7 +51,7 @@ class _LoginState extends State<Login> {
           user.join_code = loginUser.join_code;
           user.setIsLogin(true); // 出发通知登录
           FLToast.showText(text:'登录成功', onDismissed: (){});
-        }, (error) {
+        }, errorCallBack: (error) {
           dismiss();
         });
     }
