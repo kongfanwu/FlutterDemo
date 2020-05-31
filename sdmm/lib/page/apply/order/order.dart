@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sdmm/public/tool_model.dart';
 import 'service_order.dart';
 import 'sale_order.dart';
+import 'package:provider/provider.dart';
+import 'package:sdmm/model/user_model.dart';
 
 class OrderManager extends StatefulWidget {
   OrderManager({this.navBarTitle});
@@ -99,6 +101,18 @@ class _OrderManagerState extends State<OrderManager> {
 
   @override
   Widget build(BuildContext context) {
+
+//  print('Apply1-----------${context.read<UserModel>().name}'); // NO
+  print('Apply2-----------${context.watch<UserModel>().name}'); // OK
+  print('Apply3--------${Provider.of<UserModel>(context, listen: true).name}'); // OK
+  print('Apply4---------${context.select((UserModel p) => p.name)}'); // OK
+
+//    return Consumer<UserModel>(
+//      builder: (BuildContext context, UserModel userModel, _) {
+//      print(userModel.name);
+//      return Text(userModel.name);
+//    });
+
     return Scaffold(
       appBar: new AppBar(
         title: new Text(widget.navBarTitle),
@@ -135,16 +149,16 @@ class _OrderManagerState extends State<OrderManager> {
                   Container(
                     height: 10,
 //                    color: Colors.red,
-                    child:Stack(
-                      alignment:Alignment.center , //指定未定位或部分定位widget的对齐方式
+                    child: Stack(
+                      alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
                       children: <Widget>[
                         Container(
-                            height: 10,
-                            width: 150,
-                            decoration: BoxDecoration(
-                              color: Colors.orange,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
+                          height: 10,
+                          width: 150,
+                          decoration: BoxDecoration(
+                            color: Colors.orange,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
                         ),
                         AnimatedPositioned(
                           duration: Duration(seconds: 0),

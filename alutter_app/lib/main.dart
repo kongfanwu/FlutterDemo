@@ -25,6 +25,7 @@ import 'futureBuilderClass.dart';
 import 'package:alutter_app/custom_widgets/gradient_button.dart';
 import 'future_builder_class.dart';
 import 'provider_demo/provider_app.dart';
+import 'provider_demo/provider_app2.dart';
 import 'animation_class.dart';
 import 'animated_widgets_test.dart';
 
@@ -100,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: AnimatedWidgetsTest(),
+      body: ProviderMyApp2(),
     );
   }
 }

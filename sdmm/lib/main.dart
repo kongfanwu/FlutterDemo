@@ -16,7 +16,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 //    debugPaintSizeEnabled = true;// 可视方式调试布局问题
-
     final _userModel = UserModel(null, null, null, null, null, null, null, false);
     FLToastDefaults _toastDefaults = FLToastDefaults();
 
@@ -32,18 +31,11 @@ class MyApp extends StatelessWidget {
           providers: [
             ChangeNotifierProvider(create: (_) => _userModel), // 共享的对象
           ],
-        child: FWContent(),
+//        child: FWContent(),
+          child: MyHomePage(title: 'Flutter Demo Home Page'),
         ),
       ),
     );
-  }
-}
-
-class FWContent extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final userModel = context.watch<UserModel>();
-    return !userModel.isLogin ? Login() : MyHomePage(title: 'Flutter Demo Home Page');
   }
 }
 
@@ -56,14 +48,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var _title = '';
-  int _currentIndex = 3;
-  List pages = [
-    SDMMMessage(),
-    SDMMAI(),
-    SDMMWork(),
-    SDMMApply(),
-    SDMMMine(),
-  ];
+  int _currentIndex = 2;
+
 
   List <String> _titles = [
     '消息',
@@ -75,6 +61,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    List pages = [
+      SDMMMessage(),
+      SDMMAI(),
+      SDMMWork(),
+      SDMMApply(),
+      SDMMMine(),
+    ];
 
     List <BottomNavigationBarItem> barItems = [
       BottomNavigationBarItem(title: Text(_titles[0]), icon: Icon(Icons.message)),
@@ -84,7 +77,8 @@ class _MyHomePageState extends State<MyHomePage> {
       BottomNavigationBarItem(title: Text(_titles[4]), icon: Icon(Icons.person)),
     ];
 
-    return Scaffold(
+    final userModel = context.watch<UserModel>();
+    return !userModel.isLogin ? Login() : Scaffold(
       appBar: AppBar(
         title: Text(_title),
       ),
@@ -94,6 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         onTap: (int index){
+          print('-----------${context.read<UserModel>().name}');
           setState(() {
             _currentIndex = index;
             _title = _titles[_currentIndex];

@@ -14,7 +14,6 @@ class ServiceOrder extends StatefulWidget {
 
 class _ServiceOrderState extends State<ServiceOrder> {
   List<CardItemModel> _dataList = new List();
-  var userModel;
 
   @override
   void initState() {
@@ -48,37 +47,42 @@ class _ServiceOrderState extends State<ServiceOrder> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: 报错
-//    userModel = Provider.of<UserModel>(context, listen: false);
-//    userModel = context.read<UserModel>();
-    print('-----------$userModel.name');
-    return Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.navBarTitle),
-      ),
-      body:FutureBuilder<String>(
-        future: getData(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          // 请求已结束
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              // 请求失败，显示错误
-              return Text("Error: ${snapshot.error}");
-            } else {
-              // 请求成功，显示数据
-              return OrderScaffold(dataList: _dataList,);
-            }
-          } else {
-            // 请求未结束，显示loading
-            return CircularProgressIndicator();
-          }
-        },
-      ),
-    );
+    return Consumer<UserModel>(builder: (BuildContext context, UserModel userModel, _){
+        print(userModel.name);
+        return Text(userModel.name);
+    });
+
+//    return Scaffold(
+//      appBar: new AppBar(
+//        title: new Text(widget.navBarTitle),
+//      ),
+//      // 获取共享状态的 UserModel , _ 标识结束，它最多可以获取6个参数。 <UserModel> 泛型，要获取的共享对象类型，可以多个参数，用逗号分割
+//      body:Consumer<UserModel>(builder: (BuildContext context, UserModel userModel, _){
+//        return FutureBuilder<String>(
+//          future: getData(userModel.id.toString()),
+//          builder: (BuildContext context, AsyncSnapshot snapshot) {
+//            // 请求已结束
+//            if (snapshot.connectionState == ConnectionState.done) {
+//              if (snapshot.hasError) {
+//                // 请求失败，显示错误
+//                return Text("Error: ${snapshot.error}");
+//              } else {
+//                // 请求成功，显示数据
+//                return OrderScaffold(dataList: _dataList,);
+//              }
+//            } else {
+//              // 请求未结束，显示loading
+//              return CircularProgressIndicator();
+//            }
+//          },
+//        );
+//      }),
+//    );
   }
 
-  Future<String> getData() async {
+  Future<String> getData(String userId) async {
 //    return Future.error('error12');
+    print('userId = $userId');
     return Future.delayed(Duration(seconds: 2), () => "我是从互联网上获取的数据");
 
     Map<String, dynamic> params = {};
