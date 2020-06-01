@@ -103,9 +103,9 @@ class _OrderManagerState extends State<OrderManager> {
   Widget build(BuildContext context) {
 
 //  print('Apply1-----------${context.read<UserModel>().name}'); // NO
-  print('Apply2-----------${context.watch<UserModel>().name}'); // OK
-  print('Apply3--------${Provider.of<UserModel>(context, listen: true).name}'); // OK
-  print('Apply4---------${context.select((UserModel p) => p.name)}'); // OK
+//  print('Apply2-----------${context.watch<UserModel>().name}'); // OK
+//  print('Apply3--------${Provider.of<UserModel>(context, listen: true).name}'); // OK
+//  print('Apply4---------${context.select((UserModel p) => p.name)}'); // OK
 
 //    return Consumer<UserModel>(
 //      builder: (BuildContext context, UserModel userModel, _) {
