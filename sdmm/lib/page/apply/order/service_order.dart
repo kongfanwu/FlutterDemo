@@ -43,6 +43,8 @@ class _ServiceOrderState extends State<ServiceOrder> {
       select: true,
       child: Container(child: Center(child: Text('项目服务'),),),
     ));
+
+    getDa();
   }
 
   @override
@@ -52,6 +54,7 @@ class _ServiceOrderState extends State<ServiceOrder> {
         title: new Text(widget.navBarTitle),
       ),
       body: FutureBuilder<String>(
+//        initialData: "我是默认数据",
         future: getData(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // 请求已结束
@@ -61,7 +64,8 @@ class _ServiceOrderState extends State<ServiceOrder> {
               return Text("Error: ${snapshot.error}");
             } else {
               // 请求成功，显示数据
-              return OrderScaffold(dataList: _dataList,);
+//              return OrderScaffold(dataList: _dataList,);
+              return Text("success: ${snapshot.data}");
             }
           } else {
             // 请求未结束，显示loading
@@ -93,20 +97,36 @@ class _ServiceOrderState extends State<ServiceOrder> {
     );
   }
 
-  Future<String> getData() async {
+  getDa() {
+    final userModel = Provider.of<UserModel>(context, listen: false);
+    print(userModel.getJoinCode());
     Map<String, dynamic> params = {};
-    params['user_id'] = Provider.of<UserModel>(context, listen: false).id.toString();
+    params['user_id'] = '821';
+    params['token'] = userModel.token;
+    params['join_code'] = userModel.getJoinCode();
     print(params);
+//    var dismiss = FLToast.loading(text:'加载中...');
 
-    return Future.delayed(Duration(seconds: 0), () => "我是从互联网上获取的数据");
-
-    var dismiss = FLToast.loading(text:'加载中...');
     //服务单-处方服务选择
     DioManager.getInstance().post('v5.serv/pres', params: params, successCallBack: (chudDta, success) {
-      if (!success) {
-        dismiss();
-        return;
-      }
+//      dismiss();
+
+    });
+  }
+
+  Future<String> getData() async {
+    return Future.delayed(Duration(seconds: 2), () => "我是从互联网上获取的数据");
+
+    Map<String, dynamic> params = {};
+    params['user_id'] = Provider.of<UserModel>(context, listen: false).id.toString();
+    var dismiss = FLToast.loading(text:'加载中...');
+    //服务单-处方服务选择
+//    DioManager.getInstance().post('v5.serv/pres', params: params, successCallBack: (chudDta, success) {
+//      if (!success) {
+//        dismiss();
+//        return;
+//      }
+//      dismiss();
 //      // 服务单-提卡服务选择
 //      DioManager.getInstance().post('v5.serv/ti_card', params: params, successCallBack: (cardData, success) {
 //        if (!success) {
@@ -130,6 +150,8 @@ class _ServiceOrderState extends State<ServiceOrder> {
 //          });
 //        });
 //      });
-    });
+//    });
+
+
   }
 }

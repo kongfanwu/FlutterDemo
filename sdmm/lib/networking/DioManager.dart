@@ -157,7 +157,9 @@ class DioManager {
 
     //    params['token'] = ''; // 登录不需要，其他接口需要
     params['cnmtp'] = '1';
-    params['join_code'] = '';
+    if (params['join_code'] == null) {
+      params['join_code'] = '';
+    }
 
     params['timestamp'] = timestampHaoMiao.toInt().toString();
     params['nonce'] = '$timestamp${Random().nextInt(100000)}';

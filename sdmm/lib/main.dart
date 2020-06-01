@@ -13,12 +13,12 @@ import 'package:sdmm/model/user_model.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  final _userModel = UserModel(null, null, null, null, null, null, null, false);
+  FLToastDefaults _toastDefaults = FLToastDefaults();
+
   @override
   Widget build(BuildContext context) {
 //    debugPaintSizeEnabled = true;// 可视方式调试布局问题
-    final _userModel = UserModel(null, null, null, null, null, null, null, false);
-    FLToastDefaults _toastDefaults = FLToastDefaults();
-
     // 如果你在 Provider 中提供了可监听对象（Listenable 或者 Stream）及其子类的话，那么你会得到下面这个异常警告。你可以将本文中所使用到的 CounterModel 放入 Provider 进行提供（记得 hot restart 而不是 hot reload），那么你就能看到上面这个 FlutterError 了。 你也可以在 main 方法中通过下面这行代码来禁用此提示。
 //    Provider.debugCheckInvalidValueType = null;
 
@@ -51,8 +51,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var _title = '';
-  int _currentIndex = 2;
-
+  int _currentIndex = 3;
+  List <BottomNavigationBarItem> _barItems;
 
   List <String> _titles = [
     '消息',
@@ -62,24 +62,28 @@ class _MyHomePageState extends State<MyHomePage> {
     '我的',
   ];
 
-  @override
-  Widget build(BuildContext context) {
-    List pages = [
-      SDMMMessage(),
-      SDMMAI(),
-      SDMMWork(),
-      SDMMApply(),
-      SDMMMine(),
-    ];
+  List pages = [
+    SDMMMessage(),
+    SDMMAI(),
+    SDMMWork(),
+    SDMMApply(),
+    SDMMMine(),
+  ];
 
-    List <BottomNavigationBarItem> barItems = [
+  @override
+  void initState() {
+    super.initState();
+    _barItems = [
       BottomNavigationBarItem(title: Text(_titles[0]), icon: Icon(Icons.message)),
       BottomNavigationBarItem(title: Text(_titles[1]), icon: Icon(Icons.brightness_4)),
       BottomNavigationBarItem(title: Text(_titles[2]), icon: Icon(Icons.work)),
       BottomNavigationBarItem(title: Text(_titles[3]), icon: Icon(Icons.apps)),
       BottomNavigationBarItem(title: Text(_titles[4]), icon: Icon(Icons.person)),
     ];
+  }
 
+  @override
+  Widget build(BuildContext context) {
     final userModel = context.watch<UserModel>();
     return !userModel.isLogin ? Login() : Scaffold(
       appBar: AppBar(
@@ -87,11 +91,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        items: barItems,
+        items: _barItems,
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         onTap: (int index){
-          print('-----------${context.read<UserModel>().name}');
           setState(() {
             _currentIndex = index;
             _title = _titles[_currentIndex];

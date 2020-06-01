@@ -18,6 +18,10 @@ class UserModel with ChangeNotifier  {
   List <JoinModel> join_code;
   bool isLogin;
 
+  String getJoinCode() {
+    return join_code.first.code;
+  }
+
   //不同的类使用不同的mixin即可
   factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
