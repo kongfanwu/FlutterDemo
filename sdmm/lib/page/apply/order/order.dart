@@ -107,8 +107,8 @@ class _OrderManagerState extends State<OrderManager> {
 //  print('Apply3--------${Provider.of<UserModel>(context, listen: true).name}'); // OK
 //  print('Apply4---------${context.select((UserModel p) => p.name)}'); // OK
 
-//    return Consumer<UserModel>(
-//      builder: (BuildContext context, UserModel userModel, _) {
+//    return Consumer2<ChangeNotifierProvider, UserModel>(
+//      builder: (BuildContext context, ChangeNotifierProvider pro, UserModel userModel, _) {
 //      print(userModel.name);
 //      return Text(userModel.name);
 //    });

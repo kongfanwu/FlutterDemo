@@ -111,24 +111,16 @@ class _SDMMApplyState extends State<SDMMApply> {
   @override
   Widget build(BuildContext context) {
 //    print('Apply-----------${context.read<UserModel>().name}'); // NO
-    print('Apply2-----------${context.watch<UserModel>().name}'); // OK
-    print('apply3--------${Provider.of<UserModel>(context, listen: true).name}'); // OK
-    print('apply4---------${context.select((UserModel p) => p.name)}'); // OK
-  //    Consumer<UserModel>() // OK
+//    print('Apply2-----------${context.watch<UserModel>().name}'); // OK
+    print('apply3--------${Provider.of<UserModel>(context, listen: false).name}'); // OK
+//    print('apply4---------${context.select((UserModel p) => p.name)}'); // OK
 
+// OK
 //    return Consumer<UserModel>(
 //      builder: (BuildContext context, UserModel userModel, _){
 //        print(userModel.name);
 //        return Text(userModel.name);
 //    });
-
-  return Center(
-    child: FloatingActionButton(
-      onPressed: () => Navigator.of(context)
-      .push(MaterialPageRoute(builder: (context) => OrderManager(navBarTitle: "itemModel.title",))),
-    child: Icon(Icons.navigate_next),
-    ),
-  );
 
     return Container(
       color: Colors.black12,

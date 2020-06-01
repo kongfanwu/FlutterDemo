@@ -19,22 +19,25 @@ class MyApp extends StatelessWidget {
     final _userModel = UserModel(null, null, null, null, null, null, null, false);
     FLToastDefaults _toastDefaults = FLToastDefaults();
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        primaryColor: Colors.red,
-      ),
-      home: FLToastProvider( // 包裹吐司提示
-        child: MultiProvider( // 状态共享管理
-          providers: [
-            ChangeNotifierProvider(create: (_) => _userModel), // 共享的对象
-          ],
-//        child: FWContent(),
-          child: MyHomePage(title: 'Flutter Demo Home Page'),
+    // 如果你在 Provider 中提供了可监听对象（Listenable 或者 Stream）及其子类的话，那么你会得到下面这个异常警告。你可以将本文中所使用到的 CounterModel 放入 Provider 进行提供（记得 hot restart 而不是 hot reload），那么你就能看到上面这个 FlutterError 了。 你也可以在 main 方法中通过下面这行代码来禁用此提示。
+//    Provider.debugCheckInvalidValueType = null;
+
+    return FLToastProvider( // 包裹吐司提示
+      child: MultiProvider( // 状态共享管理
+        providers: [
+//            ChangeNotifierProvider(create: (_) => _userModel), // 共享的对象
+          ChangeNotifierProvider.value(value: _userModel),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            primaryColor: Colors.red,
+          ),
+          home: MyHomePage(title: 'Flutter Demo Home Page'),
         ),
-      ),
+      )
     );
   }
 }
