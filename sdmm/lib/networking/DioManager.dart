@@ -182,7 +182,7 @@ class DioManager {
     }
 
     // 4 数组里的字符串 用&链接成大字符串 5 appKey(U7doak7fl4da45d) 与第4步拼接 得到sig1
-    var signString = '';
+    var signString = GlobalConfig.signString;
     for (var i = 0; i < signList.length; i++) {
       if (i == signList.length - 1) {
         signString += signList[i];
