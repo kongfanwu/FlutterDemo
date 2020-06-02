@@ -28,6 +28,7 @@ import 'provider_demo/provider_app.dart';
 import 'provider_demo/provider_app2.dart';
 import 'animation_class.dart';
 import 'animated_widgets_test.dart';
+import 'async_await_class.dart';
 
 //void main() => runApp(MyApp());
 void main() => runApp((MyApp()));
@@ -101,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: ProviderMyApp2(),
+      body: FWFutureBuilder(),
     );
   }
 }

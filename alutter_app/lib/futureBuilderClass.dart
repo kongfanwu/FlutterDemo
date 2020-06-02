@@ -1,3 +1,6 @@
+import 'dart:async';
+//import 'dart:html';
+
 import 'package:flutter/material.dart';
 
 // 异步UI更新
@@ -9,13 +12,34 @@ class FWFutureBuilder extends StatefulWidget {
 
 class _FWFutureBuilderState extends State<FWFutureBuilder> {
 
+  Future checkVersion() async {
+    var version = await lookUpVersion();
+    // Do something with version
+  }
+
+  aaa() {
+    await lookUpVersion();
+  }
+
+
   Future<String> mockNetworkData() async {
 //    return Future.error('error12');
-    return Future.delayed(Duration(seconds: 2), () => "我是从互联网上获取的数据");
+//    return Future.delayed(Duration(seconds: 2), () => "我是从互联网上获取的数据");
+
   }
+  Future<void> getData(Function callBack) async {
+    new Timer(Duration(seconds: 2), () {
+      callBack('result');
+      return Future.value('resultvalue');
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return Center(
       child: FutureBuilder<String>(
         future: mockNetworkData(),

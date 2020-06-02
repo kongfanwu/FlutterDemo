@@ -9,5 +9,6 @@ class ProviderMyApp2 extends StatefulWidget {
 class _ProviderMyApp2State extends State<ProviderMyApp2> {
   @override
   Widget build(BuildContext context) {
-  return Text('data');
+    return Text('data');
+  }
 }
