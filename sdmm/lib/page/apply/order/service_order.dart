@@ -5,6 +5,8 @@ import 'package:flui/flui.dart';
 import 'package:sdmm/networking/DioManager.dart';
 import 'package:provider/provider.dart';
 import 'package:sdmm/model/user_model.dart';
+import './model/goods_model.dart';
+import './model/card_model.dart';
 
 class ServiceOrder extends StatefulWidget {
   ServiceOrder({this.navBarTitle});
@@ -130,9 +132,10 @@ class _ServiceOrderState extends State<ServiceOrder> {
   }
 
   Future<List<CardItemModel>> getData() async {
-    await Future.delayed(Duration(seconds: 1), () {
-      print("延时三秒后请求数据");
-    });
+    List<CardItemModel> _dataList = new List();
+//    await Future.delayed(Duration(seconds: 1), () {
+//      print("延时三秒后请求数据");
+//    });
 
     final userModel = Provider.of<UserModel>(context, listen: false);
     print(userModel.getJoinCode());
@@ -143,16 +146,34 @@ class _ServiceOrderState extends State<ServiceOrder> {
     print(params);
 
 //    var dismiss = FLToast.loading(text:'加载中...');
-    var future =  Future.wait([getChuFangData(params), getTiCardData(params), getGoodsData(params), getProData(params)]);
-    print('future = $future');
-//    return future.then((value) => value);
+//    var future =  Future.wait([getChuFangData(params), getTiCardData(params), getGoodsData(params), getProData(params)]);
+//    print('future = $future');
+//    var res = future.then((value) {
+//      print('value = $value');
+//      return '1234';
+//    });
+//    print(res);
 
-    List<CardItemModel> _dataList = new List();
+    // 项目服务
+    var proResp = await getProData(params);
+    List proList = proResp.data['data']['list'];
+    final goodsList = proList.map((e) => new GoodsModel.fromJson(e)).toList();
     _dataList.add(CardItemModel(
-      title: '处方服务1',
-      select: false,
-      child: Container(child: Center(child: Text('处方服务'),),),
+      title: '项目服务',
+      select: true,
+      goods_list: goodsList,
+      child: Container(child: Center(child: Text('项目服务'),),),
     ));
+
+//    var tiCarResp = await getTiCardData(params);
+//    print('tiCarResp = $tiCarResp');
+
+
+//    _dataList.add(CardItemModel(
+//      title: '处方服务1',
+//      select: false,
+//      child: Container(child: Center(child: Text('处方服务'),),),
+//    ));
     return _dataList;
   }
 }

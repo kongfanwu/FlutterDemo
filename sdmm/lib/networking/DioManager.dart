@@ -121,8 +121,8 @@ class DioManager {
         print('请求参数: ' + params.toString());
       }
       if (response != null) {
-        print('返回参数: ' + response.toString());
-//        LogUtil.d('返回参数: ' + response.toString());
+//        print('返回参数: ' + response.toString());
+        LogUtil.d('返回参数: ' + response.toString());
       }
       print('👈 👈 👈 👈');
     }

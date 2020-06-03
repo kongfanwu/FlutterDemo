@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sdmm/public/tool_model.dart';
+import './model/goods_model.dart';
+import './model/card_model.dart';
 
 class OrderScaffold extends StatefulWidget {
   OrderScaffold({this.dataList});
@@ -231,9 +233,10 @@ class _CardItemWidgetState extends State<CardItemWidget> {
 
 /* 各种卡 item model */
 class CardItemModel {
-  CardItemModel({this.title, this.select = false, this.children, this.child});
+  CardItemModel({this.title, this.select = false, this.goods_list, this.children, this.child});
   String title;
   bool select;
   List<CardItemModel> children;
+  List <GoodsModel> goods_list;
   Widget child;
 }
