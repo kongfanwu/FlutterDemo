@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import './order_scaffold.dart';
 import 'package:flui/flui.dart';
@@ -43,33 +44,36 @@ class _ServiceOrderState extends State<ServiceOrder> {
       select: true,
       child: Container(child: Center(child: Text('项目服务'),),),
     ));
-
-    getDa();
   }
-
+//  var dismiss;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
         title: new Text(widget.navBarTitle),
       ),
-      body: FutureBuilder<String>(
+      body: FutureBuilder<List<CardItemModel>>(
 //        initialData: "我是默认数据",
         future: getData(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // 请求已结束
           if (snapshot.connectionState == ConnectionState.done) {
+//            dismiss();
             if (snapshot.hasError) {
               // 请求失败，显示错误
               return Text("Error: ${snapshot.error}");
             } else {
               // 请求成功，显示数据
 //              return OrderScaffold(dataList: _dataList,);
-              return Text("success: ${snapshot.data}");
+//              return Text("success: ${snapshot.data}");
+              List<CardItemModel> cardItemList = snapshot.data;
+              return Text("success: ${cardItemList.first.title}");
             }
           } else {
             // 请求未结束，显示loading
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator(),);
+//            dismiss = FLToast.loading(text:'加载中...');
+            return SizedBox();
           }
         },
       ),
@@ -97,61 +101,58 @@ class _ServiceOrderState extends State<ServiceOrder> {
     );
   }
 
-  getDa() {
+  // 服务单-提卡服务选择
+  Future<Response> getTiCardData(params) async {
+    //服务单-处方服务选择
+    var response = await DioManager.getInstance().post('v5.serv/ti_card', params: params);
+    return response;
+  }
+
+  // 服务单-产品服务选择
+  Future<Response> getGoodsData(params) async {
+    //服务单-处方服务选择
+    var response = await DioManager.getInstance().post('v5.serv/goods', params: params);
+    return response;
+  }
+
+  // 服务单-项目服务选择
+  Future<Response> getProData(params) async {
+    //服务单-处方服务选择
+    var response = await DioManager.getInstance().post('v5.serv/pro', params: params);
+    return response;
+  }
+
+  //服务单-处方服务选择
+  Future<Response> getChuFangData(params) async {
+    //服务单-处方服务选择
+    var response = await DioManager.getInstance().post('v5.serv/pres', params: params);
+    return response;
+  }
+
+  Future<List<CardItemModel>> getData() async {
+    await Future.delayed(Duration(seconds: 1), () {
+      print("延时三秒后请求数据");
+    });
+
     final userModel = Provider.of<UserModel>(context, listen: false);
     print(userModel.getJoinCode());
     Map<String, dynamic> params = {};
-    params['user_id'] = '821';
+    params['user_id'] = '23923';
     params['token'] = userModel.token;
     params['join_code'] = userModel.getJoinCode();
     print(params);
+
 //    var dismiss = FLToast.loading(text:'加载中...');
+    var future =  Future.wait([getChuFangData(params), getTiCardData(params), getGoodsData(params), getProData(params)]);
+    print('future = $future');
+//    return future.then((value) => value);
 
-    //服务单-处方服务选择
-    DioManager.getInstance().post('v5.serv/pres', params: params, successCallBack: (chudDta, success) {
-//      dismiss();
-
-    });
-  }
-
-  Future<String> getData() async {
-    return Future.delayed(Duration(seconds: 2), () => "我是从互联网上获取的数据");
-
-    Map<String, dynamic> params = {};
-    params['user_id'] = Provider.of<UserModel>(context, listen: false).id.toString();
-    var dismiss = FLToast.loading(text:'加载中...');
-    //服务单-处方服务选择
-//    DioManager.getInstance().post('v5.serv/pres', params: params, successCallBack: (chudDta, success) {
-//      if (!success) {
-//        dismiss();
-//        return;
-//      }
-//      dismiss();
-//      // 服务单-提卡服务选择
-//      DioManager.getInstance().post('v5.serv/ti_card', params: params, successCallBack: (cardData, success) {
-//        if (!success) {
-//          dismiss();
-//          return Future.error('error');
-//        }
-//        // 服务单-产品服务选择
-//        DioManager.getInstance().post('v5.serv/goods', params: params, successCallBack: (goodsData, success) {
-//          if (!success) {
-//            dismiss();
-//            return;return Future.error('error');
-//          }
-//          // 服务单-项目服务选择
-//          DioManager.getInstance().post('v5.serv/pro', params: params, successCallBack: (proData, success) {
-//            if (!success) {
-//              dismiss();
-//              return Future.error('error');
-//            }
-//
-//            return Future.delayed(Duration(seconds: 0), () => "我是从互联网上获取的数据");
-//          });
-//        });
-//      });
-//    });
-
-
+    List<CardItemModel> _dataList = new List();
+    _dataList.add(CardItemModel(
+      title: '处方服务1',
+      select: false,
+      child: Container(child: Center(child: Text('处方服务'),),),
+    ));
+    return _dataList;
   }
 }

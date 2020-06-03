@@ -38,7 +38,7 @@ JoinModel _$JoinModelFromJson(Map<String, dynamic> json) {
     json['code'] as String,
     json['name'] as String,
     json['join_logo'] as String,
-    json['fram_id'] as String,
+    json['fram_id'],
     json['function_id'] as int,
     json['fram_name_id'] as int,
     json['store_code'] as String,

@@ -39,7 +39,9 @@ class _LoginState extends State<Login> {
         var dismiss = FLToast.loading(text:'登录中...');
         DioManager.getInstance().post(url, params: params, successCallBack: (data, success) {
           dismiss();
+          print('-------------');
           final loginUser = UserModel.fromJson(data['data']);
+
           final user = context.read<UserModel>();
           // 妈了个巴子的，这里不知道怎么将 loginUser 替换成状态管理的 user 暂且硬写吧
           user.id = loginUser.id;
@@ -66,7 +68,8 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    _phoneController.text = '18600004444';
+//    _phoneController.text = '18600004444';
+    _phoneController.text = '18600003333';
     _pwdController.text = '888888';
     _loginEnable = true;
 //    _phoneController.addListener(() {
@@ -87,7 +90,6 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
 //      resizeToAvoidBottomInset: false, // 这种方法大部分是为了不让软键盘挤压导致页面Widget 变形。并且没有挤压警告。但是会有遮挡问题。所以不采用。
       body: Container(

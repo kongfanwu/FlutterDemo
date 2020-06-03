@@ -42,7 +42,7 @@ class DioManager {
 //    };
     http://www.weather.com.cn/data/cityinfo/101010100.html
     dio.options.baseUrl = "http://pc.test.api.shendengzhineng.com/index.php/";
-    dio.options.connectTimeout = 5000;
+    dio.options.connectTimeout = 50000;
     dio.options.receiveTimeout = 3000;
     dio.options.responseType = ResponseType.json;
 //    dio.options.contentType = jsonContentType
@@ -55,18 +55,18 @@ class DioManager {
   }
 
   //get请求
-  get(String url, { Map params, Function successCallBack,
+  Future<Response> get(String url, { Map params, Function successCallBack,
       Function errorCallBack }) async {
-    _requstHttp(url, 'get', params: params, successCallBack: successCallBack, errorCallBack: errorCallBack);
+    return _requstHttp(url, 'get', params: params, successCallBack: successCallBack, errorCallBack: errorCallBack);
   }
 
   //post请求
-  post(String url, {params, Function successCallBack,
+  Future<Response> post(String url, {params, Function successCallBack,
       Function errorCallBack}) async {
-    _requstHttp(url, 'post', params: params, successCallBack: successCallBack, errorCallBack: errorCallBack);
+    return _requstHttp(url, 'post', params: params, successCallBack: successCallBack, errorCallBack: errorCallBack);
   }
 
-  _requstHttp(String url, String method, { Map params, Function successCallBack, Function errorCallBack }) async {
+  Future<Response> _requstHttp(String url, String method, { Map params, Function successCallBack, Function errorCallBack }) async {
     Response response;
     final reqUrl = dio.options.baseUrl + url;
     params = configBaseParams(params, reqUrl);
@@ -110,7 +110,7 @@ class DioManager {
       }
       _error(errorCallBack, error.message);
       successCallBack(null, false);
-      return '';
+      return response;
     }
     // debug模式打印相关数据
     if (GlobalConfig.isDebug) {
@@ -141,6 +141,7 @@ class DioManager {
     } else if (successCallBack != null) {
       successCallBack(dataMap, true);
     }
+    return response;
   }
 
   _error(Function errorCallBack, String error) {

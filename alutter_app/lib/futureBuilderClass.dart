@@ -12,37 +12,54 @@ class FWFutureBuilder extends StatefulWidget {
 
 class _FWFutureBuilderState extends State<FWFutureBuilder> {
 
-  Future checkVersion() async {
+  Future<String> lookUpVersion() async {
+    return Future.delayed(Duration(seconds: 2), () => '1');
+  }
+
+  Future<String> lookUpVersion2() async {
+    return Future.delayed(Duration(seconds: 2), () => '2');
+  }
+
+  String lookUpVersion3() {
+    return '3';
+//    return Future.delayed(Duration(seconds: 2), () => '1.0.1');
+  }
+
+  Future<String> checkVersion() async {
     var version = await lookUpVersion();
-    // Do something with version
+    print(version);
+
+    var version3 = lookUpVersion3();
+    print(version3);
+
+    var version2 = await lookUpVersion2();
+    print(version2);
+    return '$version-$version2-$version3';
   }
 
-  aaa() {
-    await lookUpVersion();
+  aprint() async {
+    var res = await checkVersion();
   }
 
 
-  Future<String> mockNetworkData() async {
-//    return Future.error('error12');
-//    return Future.delayed(Duration(seconds: 2), () => "我是从互联网上获取的数据");
-
-  }
-  Future<void> getData(Function callBack) async {
-    new Timer(Duration(seconds: 2), () {
-      callBack('result');
-      return Future.value('resultvalue');
-    });
-  }
+//  Future<String> mockNetworkData() async {
+////    return Future.error('error12');
+////    return Future.delayed(Duration(seconds: 2), () => "我是从互联网上获取的数据");
+//
+//  }
+//  Future<void> getData(Function callBack) async {
+//    new Timer(Duration(seconds: 2), () {
+//      callBack('result');
+//      return Future.value('resultvalue');
+//    });
+//  }
 
 
   @override
   Widget build(BuildContext context) {
-
-
-
     return Center(
       child: FutureBuilder<String>(
-        future: mockNetworkData(),
+        future: checkVersion(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // 请求已结束
           if (snapshot.connectionState == ConnectionState.done) {

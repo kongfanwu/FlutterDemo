@@ -39,7 +39,7 @@ class JoinModel with ChangeNotifier {
   String code;
   String name;
   String join_logo;
-  String fram_id;
+  var fram_id;
   int function_id;
   int fram_name_id;
   String store_code;
