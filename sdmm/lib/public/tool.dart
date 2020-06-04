@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
+import 'package:dio/dio.dart';
 
 class Tool {
   // md5 加密
@@ -10,4 +11,7 @@ class Tool {
     // 这里其实就是 digest.toString()
     return hex.encode(digest.bytes);
   }
+
+
+
 }

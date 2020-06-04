@@ -204,7 +204,7 @@ class _CardItemWidgetState extends State<CardItemWidget> {
                 itemModel.title,
                 style: TextStyle(
                     color: textColor,
-                    fontSize: itemModel.select ? 16 : 14),
+                    fontSize: itemModel.select ? 14 : 12),
               ),
             ),
           ),
@@ -233,10 +233,13 @@ class _CardItemWidgetState extends State<CardItemWidget> {
 
 /* 各种卡 item model */
 class CardItemModel {
-  CardItemModel({this.title, this.select = false, this.goods_list, this.children, this.child});
+  CardItemModel({this.title, this.select = false, this.goods_list, this.cardModel, this.children, this.child});
   String title;
   bool select;
   List<CardItemModel> children;
+  // 一级目录。如 处方、产品、项目 下的产品集合
   List <GoodsModel> goods_list;
+  // 二级目录的卡Model
+  CardModel cardModel;
   Widget child;
 }

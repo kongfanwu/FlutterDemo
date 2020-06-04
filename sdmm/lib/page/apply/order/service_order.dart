@@ -60,21 +60,17 @@ class _ServiceOrderState extends State<ServiceOrder> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // 请求已结束
           if (snapshot.connectionState == ConnectionState.done) {
-//            dismiss();
             if (snapshot.hasError) {
               // 请求失败，显示错误
               return Text("Error: ${snapshot.error}");
             } else {
               // 请求成功，显示数据
-//              return OrderScaffold(dataList: _dataList,);
-//              return Text("success: ${snapshot.data}");
               List<CardItemModel> cardItemList = snapshot.data;
-              return Text("success: ${cardItemList.first.title}");
+              return OrderScaffold(dataList: cardItemList,);
             }
           } else {
             // 请求未结束，显示loading
             return Center(child: CircularProgressIndicator(),);
-//            dismiss = FLToast.loading(text:'加载中...');
             return SizedBox();
           }
         },
@@ -103,6 +99,13 @@ class _ServiceOrderState extends State<ServiceOrder> {
     );
   }
 
+  //服务单-处方服务选择
+  Future<Response> getChuFangData(params) async {
+    //服务单-处方服务选择
+    var response = await DioManager.getInstance().post('v5.serv/pres', params: params);
+    return response;
+  }
+
   // 服务单-提卡服务选择
   Future<Response> getTiCardData(params) async {
     //服务单-处方服务选择
@@ -124,18 +127,8 @@ class _ServiceOrderState extends State<ServiceOrder> {
     return response;
   }
 
-  //服务单-处方服务选择
-  Future<Response> getChuFangData(params) async {
-    //服务单-处方服务选择
-    var response = await DioManager.getInstance().post('v5.serv/pres', params: params);
-    return response;
-  }
-
   Future<List<CardItemModel>> getData() async {
     List<CardItemModel> _dataList = new List();
-//    await Future.delayed(Duration(seconds: 1), () {
-//      print("延时三秒后请求数据");
-//    });
 
     final userModel = Provider.of<UserModel>(context, listen: false);
     print(userModel.getJoinCode());
@@ -145,35 +138,96 @@ class _ServiceOrderState extends State<ServiceOrder> {
     params['join_code'] = userModel.getJoinCode();
     print(params);
 
-//    var dismiss = FLToast.loading(text:'加载中...');
-//    var future =  Future.wait([getChuFangData(params), getTiCardData(params), getGoodsData(params), getProData(params)]);
-//    print('future = $future');
-//    var res = future.then((value) {
-//      print('value = $value');
-//      return '1234';
-//    });
-//    print(res);
+    // ----------- 处方服务 -----------
+    var chuFangResp = await getChuFangData(params);
+    if (DioManager.responseState(chuFangResp)) {
+      List chuFangList = chuFangResp.data['data']['list'];
+      final chuFangGoodsList = chuFangList.map((e) => new GoodsModel.fromJson(e)).toList();
+      _dataList.add(CardItemModel(
+        title: '处方服务',
+        select: true,
+        goods_list: chuFangGoodsList,
+        child: Container(child: Center(child: Text('项目服务'),),),
+      ));
+    }
 
-    // 项目服务
+    // ----------- 提卡服务 -----------
+    var tiCarResp = await getTiCardData(params);
+    if (DioManager.responseState(tiCarResp)) {
+      // 所有卡集合
+      var childrenItems = <CardItemModel>[];
+
+      // 储值卡
+      // 序列化卡model
+      List storedCardList = tiCarResp.data['data']['stored_card'];
+      List <CardModel> storedCardModelList = storedCardList.map((e) => new CardModel.fromJson(e)).toList();
+      // 根据卡model 生成 CardItemModel 集合，并存入 childrenItems
+      final storeCardItemList = storedCardModelList.map((e) {
+        return CardItemModel(
+        title: e.name,
+        child: Container(child: Center(child: Text(e.name),),),
+        );
+      }).toList();
+      childrenItems.addAll(storeCardItemList);
+
+      // 任选卡
+      // 序列化卡model
+      List numCardList = tiCarResp.data['data']['card_num'];
+      List <CardModel> numCardModelList = numCardList.map((e) => new CardModel.fromJson(e)).toList();
+      // 根据卡model 生成 CardItemModel 集合，并存入 childrenItems
+      final numCardItemList = numCardModelList.map((e) {
+        return CardItemModel(
+          title: e.name,
+          child: Container(child: Center(child: Text(e.name),),),
+        );
+      }).toList();
+      childrenItems.addAll(numCardItemList);
+
+      // 时间卡
+      // 序列化卡model
+      List timeCardList = tiCarResp.data['data']['card_time'];
+      List <CardModel> timeCardModelList = timeCardList.map((e) => new CardModel.fromJson(e)).toList();
+      // 根据卡model 生成 CardItemModel 集合，并存入 childrenItems
+      final timeCardItemList = timeCardModelList.map((e) {
+        return CardItemModel(
+          title: e.name,
+          child: Container(child: Center(child: Text(e.name),),),
+        );
+      }).toList();
+      childrenItems.addAll(timeCardItemList);
+
+      _dataList.add(CardItemModel(
+        title: '提卡服务',
+        child: Container(child: Center(child: Text('提卡服务'),),),
+        children: childrenItems,
+      ));
+    }
+
+    // ----------- 项目服务 -----------
     var proResp = await getProData(params);
-    List proList = proResp.data['data']['list'];
-    final goodsList = proList.map((e) => new GoodsModel.fromJson(e)).toList();
-    _dataList.add(CardItemModel(
-      title: '项目服务',
-      select: true,
-      goods_list: goodsList,
-      child: Container(child: Center(child: Text('项目服务'),),),
-    ));
+    if (DioManager.responseState(proResp)) {
+      List proList = proResp.data['data']['list'];
+      final goodsList = proList.map((e) => new GoodsModel.fromJson(e)).toList();
+      _dataList.add(CardItemModel(
+        title: '项目服务',
+        goods_list: goodsList,
+        child: Container(child: Center(child: Text('项目服务'),),),
+      ));
+    }
 
-//    var tiCarResp = await getTiCardData(params);
-//    print('tiCarResp = $tiCarResp');
+    // ----------- 产品服务 -----------
+    var goodsResp = await getGoodsData(params);
+    if (DioManager.responseState(goodsResp)) {
+      List goodsList = goodsResp.data['data']['list'];
+      final goodsGoodsList = goodsList.map((e) => new GoodsModel.fromJson(e)).toList();
+      _dataList.add(CardItemModel(
+        title: '产品服务',
+        goods_list: goodsGoodsList,
+        child: Container(child: Center(child: Text('产品服务'),),),
+      ));
+    }
 
-
-//    _dataList.add(CardItemModel(
-//      title: '处方服务1',
-//      select: false,
-//      child: Container(child: Center(child: Text('处方服务'),),),
-//    ));
     return _dataList;
   }
 }
+

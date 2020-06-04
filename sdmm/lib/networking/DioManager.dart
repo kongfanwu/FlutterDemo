@@ -18,10 +18,14 @@ DioManager.getInstance().post('', params: params, successCallBack: (data, succes
 });
 * */
 
+mixin FWResponse {
+
+}
+
 /*
  * 网络请求管理类
  */
-class DioManager {
+class DioManager with FWResponse {
   //写一个单例
   //在 Dart 里，带下划线开头的变量是私有变量
   static DioManager _instance;
@@ -197,6 +201,14 @@ class DioManager {
     final sign = Tool.xmhMD5(Tool.xmhMD5(signString));
     return sign;
   }
+
+  // 获取请求状态 true：成功
+  static bool responseState(Response res) {
+    return res.data['code'] == 1 ? true : false;
+  }
+
+  // 获取 Response msg 消息
+  static bool responseMsg(Response res) => res.data['msg'];
 }
 
 /*
@@ -224,3 +236,4 @@ class ResultCode {
   /// read the DioError.error if it is not null.
   static const DEFAULT = -5;
 }
+
