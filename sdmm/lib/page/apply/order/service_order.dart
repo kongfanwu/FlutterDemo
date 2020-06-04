@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:sdmm/model/user_model.dart';
 import './model/goods_model.dart';
 import './model/card_model.dart';
+import './order_content_scaffold.dart';
+import 'card_order_content_scaffold.dart';
 
 class ServiceOrder extends StatefulWidget {
   ServiceOrder({this.navBarTitle});
@@ -147,7 +149,7 @@ class _ServiceOrderState extends State<ServiceOrder> {
         title: '处方服务',
         select: true,
         goods_list: chuFangGoodsList,
-        child: Container(child: Center(child: Text('项目服务'),),),
+        child: OrderContentScaffold(goods_list: chuFangGoodsList,),
       ));
     }
 
@@ -165,7 +167,8 @@ class _ServiceOrderState extends State<ServiceOrder> {
       final storeCardItemList = storedCardModelList.map((e) {
         return CardItemModel(
         title: e.name,
-        child: Container(child: Center(child: Text(e.name),),),
+        cardModel: e,
+        child: CardOrderContentScaffold(e),
         );
       }).toList();
       childrenItems.addAll(storeCardItemList);
@@ -178,7 +181,8 @@ class _ServiceOrderState extends State<ServiceOrder> {
       final numCardItemList = numCardModelList.map((e) {
         return CardItemModel(
           title: e.name,
-          child: Container(child: Center(child: Text(e.name),),),
+          cardModel: e,
+          child: CardOrderContentScaffold(e),
         );
       }).toList();
       childrenItems.addAll(numCardItemList);
@@ -191,7 +195,8 @@ class _ServiceOrderState extends State<ServiceOrder> {
       final timeCardItemList = timeCardModelList.map((e) {
         return CardItemModel(
           title: e.name,
-          child: Container(child: Center(child: Text(e.name),),),
+          cardModel: e,
+          child: CardOrderContentScaffold(e),
         );
       }).toList();
       childrenItems.addAll(timeCardItemList);
@@ -211,7 +216,7 @@ class _ServiceOrderState extends State<ServiceOrder> {
       _dataList.add(CardItemModel(
         title: '项目服务',
         goods_list: goodsList,
-        child: Container(child: Center(child: Text('项目服务'),),),
+        child: OrderContentScaffold(goods_list: goodsList,),
       ));
     }
 
@@ -223,7 +228,7 @@ class _ServiceOrderState extends State<ServiceOrder> {
       _dataList.add(CardItemModel(
         title: '产品服务',
         goods_list: goodsGoodsList,
-        child: Container(child: Center(child: Text('产品服务'),),),
+        child: OrderContentScaffold(goods_list: goodsGoodsList,),
       ));
     }
 
