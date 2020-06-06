@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sdmm/public/tool_model.dart';
+import 'select_user.dart';
 import 'service_order.dart';
 import 'sale_order.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,16 @@ class _OrderManagerState extends State<OrderManager> {
   void itemOnTap(ItemModel itemModel) {
     print(itemModel.title);
     if (itemModel.id == '0') {
+      Navigator.of(context).push(
+        new MaterialPageRoute(
+          builder: (context) {
+            return SelectUser(
+              navBarTitle: '搜索顾客',
+            ); // push
+          },
+        ),
+      );
+      return;
       Navigator.of(context).push(
         new MaterialPageRoute(
           builder: (context) {

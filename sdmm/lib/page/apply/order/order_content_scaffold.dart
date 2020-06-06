@@ -24,7 +24,7 @@ class _OrderContentScaffoldState extends State<OrderContentScaffold> {
                   return ListTile(title: Text(goodsModel.name),);
                 },
                 separatorBuilder: (BuildContext context, int index) {
-                  return Divider(color: Colors.black12,);
+                  return Divider(color: Colors.black12, height: 1, thickness: 1);
                 },
                 itemCount: widget.goods_list.length,
             ),

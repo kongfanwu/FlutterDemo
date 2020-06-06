@@ -48,7 +48,8 @@ class GradientButton extends StatelessWidget {
             constraints: BoxConstraints.tightFor(height: height, width: width),
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+//                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: DefaultTextStyle(
                   style: TextStyle(fontWeight: FontWeight.bold),
                   child: child,
