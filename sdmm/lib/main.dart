@@ -10,6 +10,9 @@ import 'package:flutter/rendering.dart'; // 可视化视图调试库
 import './page/login.dart';
 import 'package:sdmm/model/user_model.dart';
 
+import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -35,6 +38,16 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.blue,
             primaryColor: Colors.red,
           ),
+          localizationsDelegates: [
+            GlobalEasyRefreshLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate
+          ],
+          supportedLocales: [
+//            Locale('en', ''),
+            Locale('zh', 'CN'),
+          ],
           home: MyHomePage(title: 'Flutter Demo Home Page'),
         ),
       )
@@ -104,5 +117,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
 
 

@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:sdmm/model/user_model.dart';
 import './model/customer_model.dart';
 
+import 'package:flutter_easyrefresh/easy_refresh.dart';
+
 class SelectUser extends StatefulWidget {
   SelectUser({this.navBarTitle});
   final String navBarTitle;
@@ -16,13 +18,14 @@ class SelectUser extends StatefulWidget {
 class _SelectUserState extends State<SelectUser> {
   TextEditingController _textFieldController = TextEditingController();
   FocusNode _focusNode = FocusNode();
-  static CustomerModel LOADING_FINISH = CustomerModel.fromJson(Map());
-  List<CustomerModel> _dataArray = [LOADING_FINISH];
+//  static CustomerModel LOADING_FINISH = CustomerModel.fromJson(Map());
+  List<CustomerModel> _dataArray = [];
   var _searchText;
   // 没有更多数据标识： 默认 false
-  bool _noMoreData = false;
+//  bool _noMoreData = false;
   int _page = 1;
 
+  EasyRefreshController _controller = EasyRefreshController();
 
   @override
   void initState() {
@@ -31,43 +34,6 @@ class _SelectUserState extends State<SelectUser> {
     _textFieldController.addListener(() {
       print('controller = ${_textFieldController.text}');
     });
-  }
-
-  Widget getLoadingWidget() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
-      alignment: Alignment.center,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            padding:
-            EdgeInsets.fromLTRB(10, 10, 5, 10),
-            child: CircularProgressIndicator(
-              backgroundColor: Colors.grey,
-              strokeWidth: 3,
-            ),
-          ),
-          Container(
-            padding:
-            EdgeInsets.fromLTRB(5, 10, 10, 10),
-            child: Text(
-              "正在加载中...",
-              style: TextStyle(
-                  fontSize: 16, color: Colors.blue),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget getNoMoreData() {
-    return Container(
-      alignment: Alignment.center,
-      child: Text("已经到底了 o(╯□╰)o", style: TextStyle(fontSize: 16, color: Colors.blue)),
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
-    );
   }
 
   @override
@@ -96,40 +62,29 @@ class _SelectUserState extends State<SelectUser> {
           Expanded(
             child: Container(
               padding: const EdgeInsets.only(top: 10),
-              child: RefreshIndicator(
-                onRefresh: () {
+              child: EasyRefresh(
+                onRefresh: () async {
                   _page = 1;
-                  return getData().whenComplete(() => print('whenComplete'));
+                  getData();
                 },
-                child: Scrollbar(
-                  child: ListView.separated(
-                    //当子组件太短而不能滚动的时候，需要添加physics: const AlwaysScrollableScrollPhysics(),否则下拉刷新和上拉加载更多都无效，无法触发了
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    itemBuilder: (BuildContext context, int index) {
-                      // 最后一个元素
-                      if (_dataArray[index] == LOADING_FINISH) {
-                        // 没有更多数据
-                        if (_noMoreData) {
-                          return getNoMoreData();
-                        }
-                        // 下一页
-                        else {
-                          _page++;
-                          getData();
-                          return getLoadingWidget();
-                        }
-                      }
-
-                      final customerModel = _dataArray[index];
-                      return ListTile(
-                          title: Text('${customerModel.user_name}'));
-                    },
-                    separatorBuilder: (BuildContext context, int index) {
-                      return Divider(
-                          color: Colors.black12, height: 1, thickness: 1);
-                    },
-                    itemCount: _dataArray.isEmpty ? 0 : _dataArray.length,
-                  ),
+                onLoad: () async {
+                  _page++;
+                  getData();
+                },
+                controller: _controller,
+                child: ListView.separated(
+                  //当子组件太短而不能滚动的时候，需要添加physics: const AlwaysScrollableScrollPhysics(),否则下拉刷新和上拉加载更多都无效，无法触发了
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemBuilder: (BuildContext context, int index) {
+                    final customerModel = _dataArray[index];
+                    return ListTile(
+                        title: Text('${index} --- ${customerModel.user_name}'));
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider(
+                        color: Colors.black12, height: 1, thickness: 1);
+                  },
+                  itemCount: _dataArray.isEmpty ? 0 : _dataArray.length,
                 ),
               ),
             ),
@@ -140,8 +95,6 @@ class _SelectUserState extends State<SelectUser> {
   }
 
   Future getData() async {
-
-
     final userModel = Provider.of<UserModel>(context, listen: false);
     print(userModel.getJoinCode());
     Map<String, dynamic> params = {};
@@ -155,25 +108,24 @@ class _SelectUserState extends State<SelectUser> {
         .post('v5.serv_1/search_user', params: params);
     if (DioManager.responseState(response)) {
       List jsonList = response.data['data']['list'];
-      final customerMdoelList =
+      var customerMdoelList =
           jsonList.map((e) => new CustomerModel.fromJson(e)).toList();
       if (_page == 1) {
-        _dataArray.removeRange(0, _dataArray.length - 2);
-        _dataArray.insertAll(_dataArray.length - 1, customerMdoelList);
+//        _dataArray.removeRange(0, _dataArray.length - 1);
+//        _dataArray.insertAll(0, customerMdoelList);
+        _dataArray = customerMdoelList;
       } else {
         _dataArray.insertAll(_dataArray.length - 1, customerMdoelList);
+//        _dataArray.addAll(customerMdoelList)
       }
       print('customerMdoelList.length = ${customerMdoelList.length}');
-      // 没有更多数据
-      if (customerMdoelList.length < 10) {
-        _noMoreData = true;
+      if (_page == 1) {
+        _controller.resetLoadState();
+      } else {
+        // 没有更多数据 customerMdoelList.length < 10
+        _controller.finishLoad(noMore: customerMdoelList.length < 10);
       }
-
-      Future.delayed(Duration(seconds: 3),(){
-        setState(() {});
-      });
-
-
+      setState(() {});
     }
   }
 }
