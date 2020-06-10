@@ -7,6 +7,7 @@ import 'package:sdmm/model/user_model.dart';
 import './model/customer_model.dart';
 
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'service_order.dart';
 
 class SelectUser extends StatefulWidget {
   SelectUser({this.navBarTitle});
@@ -18,11 +19,8 @@ class SelectUser extends StatefulWidget {
 class _SelectUserState extends State<SelectUser> {
   TextEditingController _textFieldController = TextEditingController();
   FocusNode _focusNode = FocusNode();
-//  static CustomerModel LOADING_FINISH = CustomerModel.fromJson(Map());
   List<CustomerModel> _dataArray = [];
   var _searchText;
-  // 没有更多数据标识： 默认 false
-//  bool _noMoreData = false;
   int _page = 1;
 
   EasyRefreshController _controller = EasyRefreshController();
@@ -77,8 +75,9 @@ class _SelectUserState extends State<SelectUser> {
                   physics: const AlwaysScrollableScrollPhysics(),
                   itemBuilder: (BuildContext context, int index) {
                     final customerModel = _dataArray[index];
-                    return ListTile(
-                        title: Text('${index} --- ${customerModel.user_name}'));
+                    return createCell(index, customerModel, () {
+                      onCellTap(customerModel);
+                    });
                   },
                   separatorBuilder: (BuildContext context, int index) {
                     return Divider(
@@ -92,6 +91,40 @@ class _SelectUserState extends State<SelectUser> {
         ],
       ),
     );
+  }
+
+  Widget createCell(int index, CustomerModel customerModel, GestureTapCallback onTap) {
+    print(customerModel.user_headimgurl);
+    return ListTile(
+      leading:Image.network(
+        customerModel.user_headimgurl,
+        width: 50,
+        height: 50,
+        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent loadingProgress) {
+          if (loadingProgress == null) {
+            return child;
+          } else {
+            return Center(
+                child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes : null,
+            ));
+          }
+        },
+      ),
+      title: Text(customerModel.user_name),
+      subtitle: Text(customerModel.mobile),
+      trailing: Icon(Icons.arrow_forward_ios),
+      onTap: onTap,
+    );
+  }
+
+  void onCellTap(CustomerModel customerModel) {
+    print(customerModel.user_name);
+//    Navigator.of(context).pop();
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return ServiceOrder(navBarTitle: '服务订单',); // push
+    },),);
   }
 
   Future getData() async {
