@@ -5,6 +5,7 @@ import 'service_order.dart';
 import 'sale_order.dart';
 import 'package:provider/provider.dart';
 import 'package:sdmm/model/user_model.dart';
+import './model/customer_model.dart';
 
 class OrderManager extends StatefulWidget {
   OrderManager({this.navBarTitle});
@@ -18,24 +19,22 @@ class _OrderManagerState extends State<OrderManager> {
   ScrollController _controller = new ScrollController();
   double _left = 0;
 
-  void itemOnTap(ItemModel itemModel) {
+  void itemOnTap(ItemModel itemModel) async {
     print(itemModel.title);
     if (itemModel.id == '0') {
-      Navigator.of(context).push(
-        new MaterialPageRoute(
-          builder: (context) {
-            return SelectUser(
-              navBarTitle: '搜索顾客',
-            ); // push
-          },
-        ),
-      );
-      return;
+      // push 到选择顾客，并等待返回选中的顾客 customerModel
+      final CustomerModel customerModel = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return SelectUser(navBarTitle: '搜索顾客',); // push
+        },
+      ),);
+
+      // 接收到选中的顾客model. push 到 服务单路由
       Navigator.of(context).push(
         new MaterialPageRoute(
           builder: (context) {
             return ServiceOrder(
               navBarTitle: '服务订单',
+              customerModel: customerModel,
             ); // push
           },
         ),

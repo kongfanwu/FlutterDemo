@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:sdmm/page/SDMMBase/empty_widget.dart';
 import 'package:sdmm/public/tool_model.dart';
 import './model/goods_model.dart';
 import './model/card_model.dart';
 
+
 class OrderScaffold extends StatefulWidget {
-  OrderScaffold({this.dataList});
+  OrderScaffold({this.dataList, this.refreshTap});
+
   final List<CardItemModel> dataList;
+  // 空数据，刷新事件
+  final GestureTapCallback refreshTap;
   @override
   _OrderScaffoldState createState() => _OrderScaffoldState();
 }
@@ -40,11 +45,18 @@ class _OrderScaffoldState extends State<OrderScaffold> {
         }
       }
     }
-    print('_currentIndexPath:section=${_currentIndexPath.section} row=${_currentIndexPath.row}');
+    if (_currentIndexPath != null) {
+      print('_currentIndexPath:section=${_currentIndexPath.section} row=${_currentIndexPath.row}');  
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // 空视图
+    if (widget.dataList.isEmpty) {
+      return EmptyView(onTap: widget.refreshTap,);
+    }
+
     // 寻找选中的 content widget
     Widget contentWidget;
     final sectionItemModel = widget.dataList[_currentIndexPath.section];
@@ -235,7 +247,7 @@ class _CardItemWidgetState extends State<CardItemWidget> {
 class CardItemModel {
   CardItemModel({this.title, this.select = false, this.goods_list, this.cardModel, this.children, this.child});
   String title;
-  bool select;
+  bool select = false;
   List<CardItemModel> children;
   // 一级目录。如 处方、产品、项目 下的产品集合
   List <GoodsModel> goods_list;

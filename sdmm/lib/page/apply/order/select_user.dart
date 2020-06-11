@@ -121,10 +121,10 @@ class _SelectUserState extends State<SelectUser> {
 
   void onCellTap(CustomerModel customerModel) {
     print(customerModel.user_name);
-//    Navigator.of(context).pop();
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return ServiceOrder(navBarTitle: '服务订单',); // push
-    },),);
+    Navigator.pop(context, customerModel);
+//    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+//      return ServiceOrder(navBarTitle: '服务订单',); // push
+//    },),);
   }
 
   Future getData() async {

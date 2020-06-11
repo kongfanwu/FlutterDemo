@@ -9,74 +9,68 @@ import './model/goods_model.dart';
 import './model/card_model.dart';
 import './order_content_scaffold.dart';
 import 'card_order_content_scaffold.dart';
+import './model/customer_model.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 
 class ServiceOrder extends StatefulWidget {
-  ServiceOrder({this.navBarTitle});
+  ServiceOrder({this.navBarTitle, this.customerModel});
   final String navBarTitle;
+  // 选中的顾客model
+  final CustomerModel customerModel;
   @override
   _ServiceOrderState createState() => _ServiceOrderState();
 }
 
 class _ServiceOrderState extends State<ServiceOrder> {
   List<CardItemModel> _dataList = new List();
+  EasyRefreshController _controller = EasyRefreshController();
 
   @override
   void initState() {
     super.initState();
-    _dataList.add(CardItemModel(
-      title: '处方服务',
-      select: false,
-      child: Container(child: Center(child: Text('处方服务'),),),
-    ));
-    _dataList.add(CardItemModel(
-      title: '提卡服务',
-      child: Container(child: Center(child: Text('提卡服务'),),),
-      children: [
-        CardItemModel(
-          title: '储值卡1',
-          select: true,
-          child: Container(child: Center(child: Text('储值卡1'),),),
-        ),
-        CardItemModel(
-          title: '储值卡2',
-          child: Container(child: Center(child: Text('储值卡2'),),),
-        ),
-      ],
-    ));
-    _dataList.add(CardItemModel(
-      title: '项目服务',
-      select: true,
-      child: Container(child: Center(child: Text('项目服务'),),),
-    ));
+    getData();
   }
-//  var dismiss;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
         title: new Text(widget.navBarTitle),
       ),
-      body: FutureBuilder<List<CardItemModel>>(
-//        initialData: "我是默认数据",
-        future: getData(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          // 请求已结束
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              // 请求失败，显示错误
-              return Text("Error: ${snapshot.error}");
-            } else {
-              // 请求成功，显示数据
-              List<CardItemModel> cardItemList = snapshot.data;
-              return OrderScaffold(dataList: cardItemList,);
-            }
-          } else {
-            // 请求未结束，显示loading
-            return Center(child: CircularProgressIndicator(),);
-            return SizedBox();
-          }
-        },
+      body: EasyRefresh(
+        controller: _controller,
+        child: OrderScaffold(
+          dataList: _dataList,
+          refreshTap: () {
+            print('refreshTap');
+          },
+        ),
       ),
+
+//      body: FutureBuilder<List<CardItemModel>>(
+////        initialData: "我是默认数据",
+//        future: getData(),
+//        builder: (BuildContext context, AsyncSnapshot snapshot) {
+//          // 请求已结束
+//          if (snapshot.connectionState == ConnectionState.done) {
+//            if (snapshot.hasError) {
+//              // 请求失败，显示错误
+//              return Text("Error: ${snapshot.error}");
+//            } else {
+//              // 请求成功，显示数据
+//              List<CardItemModel> cardItemList = snapshot.data;
+//              return OrderScaffold(dataList: cardItemList, refreshTap: () {
+//                print('refreshTap');
+//              },);
+//            }
+//          } else {
+//            // 请求未结束，显示loading
+//            return Center(child: CircularProgressIndicator(),);
+//            return SizedBox();
+//          }
+//        },
+//      ),
+
       // 获取共享状态的 UserModel , _ 标识结束，它最多可以获取6个参数。 <UserModel> 泛型，要获取的共享对象类型，可以多个参数，用逗号分割
 //      body:Consumer<UserModel>(builder: (BuildContext context, UserModel userModel, _){
 //        return FutureBuilder<String>(
@@ -104,28 +98,32 @@ class _ServiceOrderState extends State<ServiceOrder> {
   //服务单-处方服务选择
   Future<Response> getChuFangData(params) async {
     //服务单-处方服务选择
-    var response = await DioManager.getInstance().post('v5.serv/pres', params: params);
+    var response =
+        await DioManager.getInstance().post('v5.serv/pres', params: params);
     return response;
   }
 
   // 服务单-提卡服务选择
   Future<Response> getTiCardData(params) async {
     //服务单-处方服务选择
-    var response = await DioManager.getInstance().post('v5.serv/ti_card', params: params);
+    var response =
+        await DioManager.getInstance().post('v5.serv/ti_card', params: params);
     return response;
   }
 
   // 服务单-产品服务选择
   Future<Response> getGoodsData(params) async {
     //服务单-处方服务选择
-    var response = await DioManager.getInstance().post('v5.serv/goods', params: params);
+    var response =
+        await DioManager.getInstance().post('v5.serv/goods', params: params);
     return response;
   }
 
   // 服务单-项目服务选择
   Future<Response> getProData(params) async {
     //服务单-处方服务选择
-    var response = await DioManager.getInstance().post('v5.serv/pro', params: params);
+    var response =
+        await DioManager.getInstance().post('v5.serv/pro', params: params);
     return response;
   }
 
@@ -135,7 +133,8 @@ class _ServiceOrderState extends State<ServiceOrder> {
     final userModel = Provider.of<UserModel>(context, listen: false);
     print(userModel.getJoinCode());
     Map<String, dynamic> params = {};
-    params['user_id'] = '23923';
+//    params['user_id'] = '23923';
+    params['user_id'] = widget.customerModel.user_id;
     params['token'] = userModel.token;
     params['join_code'] = userModel.getJoinCode();
     print(params);
@@ -144,13 +143,18 @@ class _ServiceOrderState extends State<ServiceOrder> {
     var chuFangResp = await getChuFangData(params);
     if (DioManager.responseState(chuFangResp)) {
       List chuFangList = chuFangResp.data['data']['list'];
-      final chuFangGoodsList = chuFangList.map((e) => new GoodsModel.fromJson(e)).toList();
-      _dataList.add(CardItemModel(
-        title: '处方服务',
-        select: true,
-        goods_list: chuFangGoodsList,
-        child: OrderContentScaffold(goods_list: chuFangGoodsList,),
-      ));
+      final chuFangGoodsList =
+          chuFangList.map((e) => new GoodsModel.fromJson(e)).toList();
+      if (chuFangGoodsList.isNotEmpty) {
+        _dataList.add(CardItemModel(
+          title: '处方服务',
+          select: false,
+          goods_list: chuFangGoodsList,
+          child: OrderContentScaffold(
+            goods_list: chuFangGoodsList,
+          ),
+        ));
+      }
     }
 
     // ----------- 提卡服务 -----------
@@ -162,13 +166,14 @@ class _ServiceOrderState extends State<ServiceOrder> {
       // 储值卡
       // 序列化卡model
       List storedCardList = tiCarResp.data['data']['stored_card'];
-      List <CardModel> storedCardModelList = storedCardList.map((e) => new CardModel.fromJson(e)).toList();
+      List<CardModel> storedCardModelList =
+          storedCardList.map((e) => new CardModel.fromJson(e)).toList();
       // 根据卡model 生成 CardItemModel 集合，并存入 childrenItems
       final storeCardItemList = storedCardModelList.map((e) {
         return CardItemModel(
-        title: e.name,
-        cardModel: e,
-        child: CardOrderContentScaffold(e),
+          title: e.name,
+          cardModel: e,
+          child: CardOrderContentScaffold(e),
         );
       }).toList();
       childrenItems.addAll(storeCardItemList);
@@ -176,7 +181,8 @@ class _ServiceOrderState extends State<ServiceOrder> {
       // 任选卡
       // 序列化卡model
       List numCardList = tiCarResp.data['data']['card_num'];
-      List <CardModel> numCardModelList = numCardList.map((e) => new CardModel.fromJson(e)).toList();
+      List<CardModel> numCardModelList =
+          numCardList.map((e) => new CardModel.fromJson(e)).toList();
       // 根据卡model 生成 CardItemModel 集合，并存入 childrenItems
       final numCardItemList = numCardModelList.map((e) {
         return CardItemModel(
@@ -190,7 +196,8 @@ class _ServiceOrderState extends State<ServiceOrder> {
       // 时间卡
       // 序列化卡model
       List timeCardList = tiCarResp.data['data']['card_time'];
-      List <CardModel> timeCardModelList = timeCardList.map((e) => new CardModel.fromJson(e)).toList();
+      List<CardModel> timeCardModelList =
+          timeCardList.map((e) => new CardModel.fromJson(e)).toList();
       // 根据卡model 生成 CardItemModel 集合，并存入 childrenItems
       final timeCardItemList = timeCardModelList.map((e) {
         return CardItemModel(
@@ -201,11 +208,17 @@ class _ServiceOrderState extends State<ServiceOrder> {
       }).toList();
       childrenItems.addAll(timeCardItemList);
 
-      _dataList.add(CardItemModel(
-        title: '提卡服务',
-        child: Container(child: Center(child: Text('提卡服务'),),),
-        children: childrenItems,
-      ));
+      if (childrenItems.isNotEmpty) {
+        _dataList.add(CardItemModel(
+          title: '提卡服务',
+          child: Container(
+            child: Center(
+              child: Text('提卡服务'),
+            ),
+          ),
+          children: childrenItems,
+        ));
+      }
     }
 
     // ----------- 项目服务 -----------
@@ -213,26 +226,37 @@ class _ServiceOrderState extends State<ServiceOrder> {
     if (DioManager.responseState(proResp)) {
       List proList = proResp.data['data']['list'];
       final goodsList = proList.map((e) => new GoodsModel.fromJson(e)).toList();
-      _dataList.add(CardItemModel(
-        title: '项目服务',
-        goods_list: goodsList,
-        child: OrderContentScaffold(goods_list: goodsList,),
-      ));
+      if (goodsList.isNotEmpty) {
+        _dataList.add(CardItemModel(
+          title: '项目服务',
+          goods_list: goodsList,
+          child: OrderContentScaffold(
+            goods_list: goodsList,
+          ),
+        ));
+      }
     }
 
     // ----------- 产品服务 -----------
     var goodsResp = await getGoodsData(params);
     if (DioManager.responseState(goodsResp)) {
       List goodsList = goodsResp.data['data']['list'];
-      final goodsGoodsList = goodsList.map((e) => new GoodsModel.fromJson(e)).toList();
-      _dataList.add(CardItemModel(
-        title: '产品服务',
-        goods_list: goodsGoodsList,
-        child: OrderContentScaffold(goods_list: goodsGoodsList,),
-      ));
+      final goodsGoodsList =
+          goodsList.map((e) => new GoodsModel.fromJson(e)).toList();
+      if (goodsGoodsList.isNotEmpty) {
+        _dataList.add(CardItemModel(
+          title: '产品服务',
+          goods_list: goodsGoodsList,
+          child: OrderContentScaffold(
+            goods_list: goodsGoodsList,
+          ),
+        ));
+      }
     }
 
+    setState(() {
+      this._dataList = _dataList;
+    });
     return _dataList;
   }
 }
-
