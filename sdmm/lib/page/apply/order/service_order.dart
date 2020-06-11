@@ -11,6 +11,7 @@ import './order_content_scaffold.dart';
 import 'card_order_content_scaffold.dart';
 import './model/customer_model.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:sdmm/page/SDMMBase/empty_widget.dart';
 
 class ServiceOrder extends StatefulWidget {
   ServiceOrder({this.navBarTitle, this.customerModel});
@@ -23,7 +24,6 @@ class ServiceOrder extends StatefulWidget {
 
 class _ServiceOrderState extends State<ServiceOrder> {
   List<CardItemModel> _dataList = new List();
-  EasyRefreshController _controller = EasyRefreshController();
 
   @override
   void initState() {
@@ -37,14 +37,13 @@ class _ServiceOrderState extends State<ServiceOrder> {
       appBar: new AppBar(
         title: new Text(widget.navBarTitle),
       ),
-      body: EasyRefresh(
-        controller: _controller,
-        child: OrderScaffold(
-          dataList: _dataList,
-          refreshTap: () {
-            print('refreshTap');
-          },
-        ),
+      body: _dataList.isEmpty ?
+      EmptyView(onTap: (){
+        widget.customerModel.user_id = 23923;
+        getData();
+      }) :
+      OrderScaffold(
+        dataList: _dataList,
       ),
 
 //      body: FutureBuilder<List<CardItemModel>>(
@@ -139,6 +138,8 @@ class _ServiceOrderState extends State<ServiceOrder> {
     params['join_code'] = userModel.getJoinCode();
     print(params);
 
+//    var dismiss = FLToast.loading(text:'登录中...');
+
     // ----------- 处方服务 -----------
     var chuFangResp = await getChuFangData(params);
     if (DioManager.responseState(chuFangResp)) {
@@ -148,7 +149,6 @@ class _ServiceOrderState extends State<ServiceOrder> {
       if (chuFangGoodsList.isNotEmpty) {
         _dataList.add(CardItemModel(
           title: '处方服务',
-          select: false,
           goods_list: chuFangGoodsList,
           child: OrderContentScaffold(
             goods_list: chuFangGoodsList,
@@ -254,7 +254,12 @@ class _ServiceOrderState extends State<ServiceOrder> {
       }
     }
 
+
+    // 将第一个数据设置默认选中状态
+    _dataList.first.select = true;
+
     setState(() {
+//      dismiss();
       this._dataList = _dataList;
     });
     return _dataList;
