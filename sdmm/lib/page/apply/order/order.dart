@@ -23,22 +23,29 @@ class _OrderManagerState extends State<OrderManager> {
     print(itemModel.title);
     if (itemModel.id == '0') {
       // push 到选择顾客，并等待返回选中的顾客 customerModel
-      final CustomerModel customerModel = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return SelectUser(navBarTitle: '搜索顾客',); // push
-        },
-      ),);
-
-      // 接收到选中的顾客model. push 到 服务单路由
-      Navigator.of(context).push(
-        new MaterialPageRoute(
+      final CustomerModel customerModel = await Navigator.push(
+        context,
+        MaterialPageRoute(
           builder: (context) {
-            return ServiceOrder(
-              navBarTitle: '服务订单',
-              customerModel: customerModel,
+            return SelectUser(
+              navBarTitle: '搜索顾客',
             ); // push
           },
         ),
       );
+      if (customerModel != null) {
+        // 接收到选中的顾客model. push 到 服务单路由
+        Navigator.of(context).push(
+          new MaterialPageRoute(
+            builder: (context) {
+              return ServiceOrder(
+                navBarTitle: '服务订单',
+                customerModel: customerModel,
+              ); // push
+            },
+          ),
+        );
+      }
     } else if (itemModel.id == '1') {
       Navigator.of(context).push(
         new MaterialPageRoute(
@@ -111,7 +118,6 @@ class _OrderManagerState extends State<OrderManager> {
 
   @override
   Widget build(BuildContext context) {
-
 //  print('Apply1-----------${context.read<UserModel>().name}'); // NO
 //  print('Apply2-----------${context.watch<UserModel>().name}'); // OK
 //  print('Apply3--------${Provider.of<UserModel>(context, listen: true).name}'); // OK
