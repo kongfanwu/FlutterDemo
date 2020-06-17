@@ -23,7 +23,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark(),
-      home: FirstScreen(),
+      home: Container(
+        color: Colors.red,
+      ),
+//      home: FirstScreen(),
     );
   }
 }

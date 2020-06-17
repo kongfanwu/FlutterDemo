@@ -12,6 +12,8 @@ import 'card_order_content_scaffold.dart';
 import './model/customer_model.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:sdmm/page/SDMMBase/empty_widget.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_loading/flutter_loading.dart';
 
 class ServiceOrder extends StatefulWidget {
   ServiceOrder({this.navBarTitle, this.customerModel});
@@ -22,75 +24,82 @@ class ServiceOrder extends StatefulWidget {
   _ServiceOrderState createState() => _ServiceOrderState();
 }
 
-class _ServiceOrderState extends State<ServiceOrder> {
+class _ServiceOrderState extends State<ServiceOrder> with LoadingStateMixin {
   List<CardItemModel> _dataList = new List();
+  var dismiss;
 
   @override
   void initState() {
     super.initState();
-    getData();
+//    var dismiss = FLToast.loading(text: '登录中...');
+    getData1();
+//    dismiss();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.navBarTitle),
-      ),
-      body: _dataList.isEmpty ?
-      EmptyView(onTap: (){
-        widget.customerModel.user_id = 23923;
-        getData();
-      }) :
-      OrderScaffold(
-        dataList: _dataList,
+    return buildLoadingContainer(
+      child: Scaffold(
+        appBar: new AppBar(
+          title: new Text(widget.navBarTitle),
+        ),
+        body: _dataList.isEmpty
+            ? EmptyView(onTap: () {
+          widget.customerModel.user_id = 23923;
+          getData1();
+        })
+            : OrderScaffold(
+          dataList: _dataList,
+        ),
+/*
+      body: FutureBuilder<List<CardItemModel>>(
+//        initialData: "我是默认数据",
+        future: getData(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          // 请求已结束
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              // 请求失败，显示错误
+              return Text("Error: ${snapshot.error}");
+            } else {
+              // 请求成功，显示数据
+              List<CardItemModel> cardItemList = snapshot.data;
+              return OrderScaffold(dataList: cardItemList, refreshTap: () {
+                print('refreshTap');
+              },);
+            }
+          } else {
+            // 请求未结束，显示loading
+            return Center(child: CircularProgressIndicator(),);
+            return SizedBox();
+          }
+        },
       ),
 
-//      body: FutureBuilder<List<CardItemModel>>(
-////        initialData: "我是默认数据",
-//        future: getData(),
-//        builder: (BuildContext context, AsyncSnapshot snapshot) {
-//          // 请求已结束
-//          if (snapshot.connectionState == ConnectionState.done) {
-//            if (snapshot.hasError) {
-//              // 请求失败，显示错误
-//              return Text("Error: ${snapshot.error}");
-//            } else {
-//              // 请求成功，显示数据
-//              List<CardItemModel> cardItemList = snapshot.data;
-//              return OrderScaffold(dataList: cardItemList, refreshTap: () {
-//                print('refreshTap');
-//              },);
-//            }
-//          } else {
-//            // 请求未结束，显示loading
-//            return Center(child: CircularProgressIndicator(),);
-//            return SizedBox();
-//          }
-//        },
-//      ),
+       获取共享状态的 UserModel , _ 标识结束，它最多可以获取6个参数。 <UserModel> 泛型，要获取的共享对象类型，可以多个参数，用逗号分割
+      body:Consumer<UserModel>(builder: (BuildContext context, UserModel userModel, _){
+        return FutureBuilder<String>(
+          future: getData(userModel.id.toString()),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            // 请求已结束
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasError) {
+                // 请求失败，显示错误
+                return Text("Error: ${snapshot.error}");
+              } else {
+                // 请求成功，显示数据
+                return OrderScaffold(dataList: _dataList,);
+              }
+            } else {
+              // 请求未结束，显示loading
+              return CircularProgressIndicator();
+            }
+          },
+        );
+      }),
 
-      // 获取共享状态的 UserModel , _ 标识结束，它最多可以获取6个参数。 <UserModel> 泛型，要获取的共享对象类型，可以多个参数，用逗号分割
-//      body:Consumer<UserModel>(builder: (BuildContext context, UserModel userModel, _){
-//        return FutureBuilder<String>(
-//          future: getData(userModel.id.toString()),
-//          builder: (BuildContext context, AsyncSnapshot snapshot) {
-//            // 请求已结束
-//            if (snapshot.connectionState == ConnectionState.done) {
-//              if (snapshot.hasError) {
-//                // 请求失败，显示错误
-//                return Text("Error: ${snapshot.error}");
-//              } else {
-//                // 请求成功，显示数据
-//                return OrderScaffold(dataList: _dataList,);
-//              }
-//            } else {
-//              // 请求未结束，显示loading
-//              return CircularProgressIndicator();
-//            }
-//          },
-//        );
-//      }),
+ */
+      ),
     );
   }
 
@@ -126,6 +135,10 @@ class _ServiceOrderState extends State<ServiceOrder> {
     return response;
   }
 
+  void getData1() async {
+    await loading(getData());
+  }
+
   Future<List<CardItemModel>> getData() async {
     List<CardItemModel> _dataList = new List();
 
@@ -137,8 +150,6 @@ class _ServiceOrderState extends State<ServiceOrder> {
     params['token'] = userModel.token;
     params['join_code'] = userModel.getJoinCode();
     print(params);
-
-//    var dismiss = FLToast.loading(text:'登录中...');
 
     // ----------- 处方服务 -----------
     var chuFangResp = await getChuFangData(params);
@@ -254,14 +265,11 @@ class _ServiceOrderState extends State<ServiceOrder> {
       }
     }
 
-
     // 将第一个数据设置默认选中状态
     _dataList.first.select = true;
 
     setState(() {
-//      dismiss();
       this._dataList = _dataList;
     });
-    return _dataList;
   }
 }
