@@ -2,7 +2,7 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import './goods_model.dart';
-
+import 'order_basic_types.dart';
 /*
 一次性生成命令：flutter packages pub run build_runner build
 持续生成命令：flutter packages pub run build_runner watch
@@ -110,6 +110,11 @@ class CardModel {
   int num;
   List <GoodsModel> goods_list;
   List <GoodsModel> pro_list;
+
+  // 服务类型
+  ServiceType serviceType;
+  // 卡类型
+  CardType cardType;
 
   //不同的类使用不同的mixin即可
   factory CardModel.fromJson(Map<String, dynamic> json) => _$CardModelFromJson(json);

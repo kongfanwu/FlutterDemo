@@ -13,13 +13,10 @@ class CardOrderContentScaffold extends StatefulWidget {
 
 class _CardOrderContentScaffoldState extends State<CardOrderContentScaffold> {
 
-
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
   }
 
   @override
@@ -28,6 +25,6 @@ class _CardOrderContentScaffoldState extends State<CardOrderContentScaffold> {
     List _goods_list = <GoodsModel>[];
     _goods_list.addAll(widget.cardModel.goods_list);
     _goods_list.addAll(widget.cardModel.pro_list);
-    return OrderContentScaffold(goods_list: _goods_list,);
+    return OrderContentScaffold(goods_list: _goods_list, cardModel: widget.cardModel,);
   }
 }

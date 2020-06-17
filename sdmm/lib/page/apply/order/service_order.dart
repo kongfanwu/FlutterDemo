@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:sdmm/page/apply/order/model/order_basic_types.dart';
+import 'package:sdmm/public/xmh_loading_state_mixin.dart';
 import './order_scaffold.dart';
-import 'package:flui/flui.dart';
 import 'package:sdmm/networking/DioManager.dart';
 import 'package:provider/provider.dart';
 import 'package:sdmm/model/user_model.dart';
@@ -10,10 +11,9 @@ import './model/card_model.dart';
 import './order_content_scaffold.dart';
 import 'card_order_content_scaffold.dart';
 import './model/customer_model.dart';
-import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:sdmm/page/SDMMBase/empty_widget.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter_loading/flutter_loading.dart';
+//import 'package:flutter_loading/flutter_loading.dart';
+
 
 class ServiceOrder extends StatefulWidget {
   ServiceOrder({this.navBarTitle, this.customerModel});
@@ -24,16 +24,14 @@ class ServiceOrder extends StatefulWidget {
   _ServiceOrderState createState() => _ServiceOrderState();
 }
 
-class _ServiceOrderState extends State<ServiceOrder> with LoadingStateMixin {
+class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
   List<CardItemModel> _dataList = new List();
   var dismiss;
 
   @override
   void initState() {
     super.initState();
-//    var dismiss = FLToast.loading(text: '登录中...');
     getData1();
-//    dismiss();
   }
 
   @override
@@ -51,54 +49,6 @@ class _ServiceOrderState extends State<ServiceOrder> with LoadingStateMixin {
             : OrderScaffold(
           dataList: _dataList,
         ),
-/*
-      body: FutureBuilder<List<CardItemModel>>(
-//        initialData: "我是默认数据",
-        future: getData(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          // 请求已结束
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              // 请求失败，显示错误
-              return Text("Error: ${snapshot.error}");
-            } else {
-              // 请求成功，显示数据
-              List<CardItemModel> cardItemList = snapshot.data;
-              return OrderScaffold(dataList: cardItemList, refreshTap: () {
-                print('refreshTap');
-              },);
-            }
-          } else {
-            // 请求未结束，显示loading
-            return Center(child: CircularProgressIndicator(),);
-            return SizedBox();
-          }
-        },
-      ),
-
-       获取共享状态的 UserModel , _ 标识结束，它最多可以获取6个参数。 <UserModel> 泛型，要获取的共享对象类型，可以多个参数，用逗号分割
-      body:Consumer<UserModel>(builder: (BuildContext context, UserModel userModel, _){
-        return FutureBuilder<String>(
-          future: getData(userModel.id.toString()),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            // 请求已结束
-            if (snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.hasError) {
-                // 请求失败，显示错误
-                return Text("Error: ${snapshot.error}");
-              } else {
-                // 请求成功，显示数据
-                return OrderScaffold(dataList: _dataList,);
-              }
-            } else {
-              // 请求未结束，显示loading
-              return CircularProgressIndicator();
-            }
-          },
-        );
-      }),
-
- */
       ),
     );
   }
@@ -157,6 +107,11 @@ class _ServiceOrderState extends State<ServiceOrder> with LoadingStateMixin {
       List chuFangList = chuFangResp.data['data']['list'];
       final chuFangGoodsList =
           chuFangList.map((e) => new GoodsModel.fromJson(e)).toList();
+      // 绑定类型
+      chuFangGoodsList.forEach((element) {
+        element.serviceType = ServiceType.chuFang;
+      });
+
       if (chuFangGoodsList.isNotEmpty) {
         _dataList.add(CardItemModel(
           title: '处方服务',
@@ -169,6 +124,7 @@ class _ServiceOrderState extends State<ServiceOrder> with LoadingStateMixin {
     }
 
     // ----------- 提卡服务 -----------
+    final serviceType = ServiceType.tiKa;
     var tiCarResp = await getTiCardData(params);
     if (DioManager.responseState(tiCarResp)) {
       // 所有卡集合
@@ -179,6 +135,22 @@ class _ServiceOrderState extends State<ServiceOrder> with LoadingStateMixin {
       List storedCardList = tiCarResp.data['data']['stored_card'];
       List<CardModel> storedCardModelList =
           storedCardList.map((e) => new CardModel.fromJson(e)).toList();
+      // 绑定卡类型
+      storedCardModelList.forEach((e) {
+        e.serviceType = serviceType;
+        e.cardType = CardType.stored;
+
+        // 内部项目、产品集合model也配置上类型。后续考虑model序列化时映射
+        e.pro_list.forEach((element) {
+          element.serviceType = e.serviceType;
+          element.cardType = e.cardType;
+        });
+        e.goods_list.forEach((element) {
+          element.serviceType = e.serviceType;
+          element.cardType = e.cardType;
+        });
+      });
+
       // 根据卡model 生成 CardItemModel 集合，并存入 childrenItems
       final storeCardItemList = storedCardModelList.map((e) {
         return CardItemModel(
@@ -194,6 +166,20 @@ class _ServiceOrderState extends State<ServiceOrder> with LoadingStateMixin {
       List numCardList = tiCarResp.data['data']['card_num'];
       List<CardModel> numCardModelList =
           numCardList.map((e) => new CardModel.fromJson(e)).toList();
+      numCardModelList.forEach((e) {
+        e.serviceType = serviceType;
+        e.cardType = CardType.num;
+
+        // 内部项目、产品集合model也配置上类型。后续考虑model序列化时映射
+        e.pro_list.forEach((element) {
+          element.serviceType = e.serviceType;
+          element.cardType = e.cardType;
+        });
+        e.goods_list.forEach((element) {
+          element.serviceType = e.serviceType;
+          element.cardType = e.cardType;
+        });
+      });
       // 根据卡model 生成 CardItemModel 集合，并存入 childrenItems
       final numCardItemList = numCardModelList.map((e) {
         return CardItemModel(
@@ -209,6 +195,20 @@ class _ServiceOrderState extends State<ServiceOrder> with LoadingStateMixin {
       List timeCardList = tiCarResp.data['data']['card_time'];
       List<CardModel> timeCardModelList =
           timeCardList.map((e) => new CardModel.fromJson(e)).toList();
+      timeCardModelList.forEach((e) {
+        e.serviceType = serviceType;
+        e.cardType = CardType.time;
+
+        // 内部项目、产品集合model也配置上类型。后续考虑model序列化时映射
+        e.pro_list.forEach((element) {
+          element.serviceType = e.serviceType;
+          element.cardType = e.cardType;
+        });
+        e.goods_list.forEach((element) {
+          element.serviceType = e.serviceType;
+          element.cardType = e.cardType;
+        });
+      });
       // 根据卡model 生成 CardItemModel 集合，并存入 childrenItems
       final timeCardItemList = timeCardModelList.map((e) {
         return CardItemModel(
@@ -220,6 +220,9 @@ class _ServiceOrderState extends State<ServiceOrder> with LoadingStateMixin {
       childrenItems.addAll(timeCardItemList);
 
       if (childrenItems.isNotEmpty) {
+        // 将第一个数据设置默认选中状态
+        childrenItems.first.select = true;
+
         _dataList.add(CardItemModel(
           title: '提卡服务',
           child: Container(
@@ -237,6 +240,9 @@ class _ServiceOrderState extends State<ServiceOrder> with LoadingStateMixin {
     if (DioManager.responseState(proResp)) {
       List proList = proResp.data['data']['list'];
       final goodsList = proList.map((e) => new GoodsModel.fromJson(e)).toList();
+      goodsList.forEach((element) {
+        element.serviceType = ServiceType.project;
+      });
       if (goodsList.isNotEmpty) {
         _dataList.add(CardItemModel(
           title: '项目服务',
@@ -254,6 +260,9 @@ class _ServiceOrderState extends State<ServiceOrder> with LoadingStateMixin {
       List goodsList = goodsResp.data['data']['list'];
       final goodsGoodsList =
           goodsList.map((e) => new GoodsModel.fromJson(e)).toList();
+      goodsGoodsList.forEach((element) {
+        element.serviceType = ServiceType.goods;
+      });
       if (goodsGoodsList.isNotEmpty) {
         _dataList.add(CardItemModel(
           title: '产品服务',

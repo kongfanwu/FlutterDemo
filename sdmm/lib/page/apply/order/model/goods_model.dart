@@ -1,7 +1,7 @@
 // 产品 项目model
 
-import 'dart:ffi';
 import 'package:json_annotation/json_annotation.dart';
+import 'order_basic_types.dart';
 
 /*
 一次性生成命令：flutter packages pub run build_runner build
@@ -55,6 +55,11 @@ class GoodsModel {
   int limit;
 
   String goods_code;
+
+  // 服务类型
+  ServiceType serviceType;
+  // 卡类型
+  CardType cardType;
 
   //不同的类使用不同的mixin即可
   factory GoodsModel.fromJson(Map<String, dynamic> json) => _$GoodsModelFromJson(json);

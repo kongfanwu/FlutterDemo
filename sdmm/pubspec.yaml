@@ -65,6 +65,7 @@ flutter:
     - static/img/yingyong_dingdanguanli.png
     - static/img/xiaoshouzhidan.png
     - static/img/nodata.png
+    - static/img/xmhLoading.gif
     - static/source/city.json
 
   #  - images/a_dot_ham.jpeg
