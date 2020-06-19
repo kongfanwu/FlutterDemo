@@ -60,6 +60,8 @@ class GoodsModel {
   ServiceType serviceType;
   // 卡类型
   CardType cardType;
+  // 购买数量
+  int buyCount = 0;
 
   //不同的类使用不同的mixin即可
   factory GoodsModel.fromJson(Map<String, dynamic> json) => _$GoodsModelFromJson(json);

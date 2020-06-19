@@ -32,6 +32,8 @@ class _SelectUserState extends State<SelectUser> {
     _textFieldController.addListener(() {
       print('controller = ${_textFieldController.text}');
     });
+
+    getData();
   }
 
   @override

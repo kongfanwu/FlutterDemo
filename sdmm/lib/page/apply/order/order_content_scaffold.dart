@@ -4,6 +4,8 @@ import 'package:sdmm/page/apply/order/model/order_basic_types.dart';
 import './model/goods_model.dart';
 import 'model/card_model.dart';
 //import './model/card_model.dart';
+import 'package:flui/flui.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class OrderContentScaffold extends StatefulWidget {
   OrderContentScaffold({this.goods_list, this.cardModel});
@@ -19,7 +21,6 @@ class OrderContentScaffold extends StatefulWidget {
 class _OrderContentScaffoldState extends State<OrderContentScaffold> {
   @override
   Widget build(BuildContext context) {
-
     return Container(
       child: Flex(direction: Axis.vertical, children: <Widget>[
         Expanded(
@@ -28,12 +29,10 @@ class _OrderContentScaffoldState extends State<OrderContentScaffold> {
 //            color: Colors.blue,
             child: ListView.separated(
                 itemBuilder: (BuildContext context, int index) {
-                  print('itemBuilder = $index');
                   final goodsModel = widget.goods_list[index];
                   return createCell(goodsModel);
                 },
                 separatorBuilder: (BuildContext context, int index) {
-                  print('separatorBuilder = $index');
                   return Divider(color: Colors.black12, height: 1, thickness: 1);
                 },
                 itemCount: widget.goods_list.length,
@@ -46,7 +45,6 @@ class _OrderContentScaffoldState extends State<OrderContentScaffold> {
 
   // 根据产品类型创建不同cell
   Widget createCell(GoodsModel goodsModel) {
-    print(goodsModel.serviceType);
     switch (goodsModel.serviceType) {
       case ServiceType.chuFang:
         return ListTile(title: Text(goodsModel.name),);
@@ -68,6 +66,8 @@ class _OrderContentScaffoldState extends State<OrderContentScaffold> {
   // TODO: 做项目cell,在做购物逻辑
   // 项目cell
   Widget createProjectCell(GoodsModel goodsModel) {
+    TextEditingController _numberViewController = TextEditingController();
+
     return Container(
 //      color: Colors.blue,
     padding: EdgeInsets.symmetric(vertical: 10),
@@ -95,14 +95,34 @@ class _OrderContentScaffoldState extends State<OrderContentScaffold> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 NumberView(
+                  value: goodsModel.buyCount ?? 0,
+                  controller: _numberViewController,
                   onChanged: (val){
                     print(val);
+                    int buyCount = int.parse(val);
+                    // 假定最大可购买数量为5，超过5 添加失败
+                    if (buyCount > 5) {
+                      _numberViewController.text = (--buyCount).toString();
+                      FLToast.showText(text:'最多只能添加5个');
+                      return;
+                    }
+                    goodsModel.buyCount = buyCount;
                   },
                 ),
                 Container(
                   padding: EdgeInsets.only(right: 10, left: 10),
 //                  color: Colors.pink,
-                  child: Icon(Icons.shopping_cart),
+                  child: IconButton(
+                    padding: const EdgeInsets.all(0),
+                    constraints: BoxConstraints(
+                      minWidth: 24,
+                      minHeight: 24,
+                    ),
+                    icon:  Icon(Icons.shopping_cart),
+                    onPressed: (){
+
+                    },
+                  ),
                 ),
               ],
             ),

@@ -30,7 +30,9 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
 
   @override
   void initState() {
+
     super.initState();
+    widget.customerModel.user_id = 23923;
     getData1();
   }
 

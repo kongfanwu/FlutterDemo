@@ -14,11 +14,15 @@ class NumberView extends StatefulWidget {
   ValueChanged<String> onChanged;
   TextEditingController controller;
   FocusNode focusNode;
+  // 默认值
+  int value;
+
 // TODO: 打算初始化设置 controller 默认值，没设置成功，总报错，后续处理
   NumberView({
     this.onChanged,
     this.controller,
     this.focusNode,
+    this.value,
   });
 
   @override
@@ -26,27 +30,33 @@ class NumberView extends StatefulWidget {
 }
 
 class _NumberViewState extends State<NumberView> {
-//  FocusNode focusNode = FocusNode();
-//  TextEditingController controller = TextEditingController();
+  TextEditingController get _controller => widget.controller ?? TextEditingController();
+  FocusNode get _focusNode => widget.focusNode ?? FocusNode();
 
   @override
   void initState() {
     // TODO: implement initState
-
-    if (widget.controller == null) {
-      widget.controller = TextEditingController();
-    }
-    if (widget.focusNode == null) {
-      widget.focusNode = FocusNode();
+    if (widget.value == null) {
+      widget.value = 0;
     }
 
-    widget.controller.text = '0';
+    _controller.text = widget.value.toString();
     super.initState();
   }
 
+//  @override
+//  void didUpdateWidget(NumberView oldWidget) {
+//    super.didUpdateWidget(oldWidget);
+//    if (widget.controller == null && oldWidget.controller != null) {
+//      _controller = TextEditingController.fromValue(oldWidget.controller.value);
+//    }
+//    else if (widget.controller != null && oldWidget.controller == null) {
+//      _controller = null;
+//    }
+//  }
+
   @override
   Widget build(BuildContext context) {
-//    return Container();
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -59,22 +69,21 @@ class _NumberViewState extends State<NumberView> {
             ),
             icon:  Icon(Icons.remove_circle_outline),
             onPressed: (){
-              var textNum = int.parse(widget.controller.text);
+              var textNum = int.parse(_controller.text);
               --textNum;
               if (textNum < 0) {
                 textNum = 0;
               }
-              widget.controller.text = textNum.toString();
-
-              widget.onChanged(widget.controller.text);
+              _controller.text = textNum.toString();
+              widget.onChanged(_controller.text);
             },
           ),
          Container(
 //           color: Colors.orange,
            width: 30,
            child: TextField(
-             focusNode: widget.focusNode,
-             controller: widget.controller,
+             focusNode: _focusNode,
+             controller: _controller,
              keyboardType: TextInputType.text,
              inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],//设置只能录入数字[0-9]
              textInputAction: TextInputAction.done,
@@ -99,11 +108,10 @@ class _NumberViewState extends State<NumberView> {
            ),
            icon:  Icon(Icons.add_circle_outline),
            onPressed: (){
-             var textNum = int.parse(widget.controller.text);
+             var textNum = int.parse(_controller.text);
              ++textNum;
-             widget.controller.text = textNum.toString();
-
-             widget.onChanged(widget.controller.text);
+             _controller.text = textNum.toString();
+             widget.onChanged(_controller.text);
            },
          ),
         ],
