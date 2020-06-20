@@ -1,10 +1,15 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:sdmm/model/user_model.dart';
+import 'package:sdmm/page/login.dart';
 import 'SDMMFeedback.dart';
 import 'SDMMMyQRCode.dart';
 import 'SDMMUserDetail.dart';
 import 'weather.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flui/flui.dart';
+import 'package:provider/provider.dart';
 
 class SDMMMine extends StatefulWidget {
   @override
@@ -145,7 +150,7 @@ class _SDMMMineState extends State<SDMMMine> {
     );
   }
 
-  void rowOnTap(TapDownDetails tapDownDetails, int index, List <MineItemModel> items) {
+  void rowOnTap(TapDownDetails tapDownDetails, int index, List <MineItemModel> items) async {
     if (index == 1) { // 我的营销二维码
       Navigator.of(context).push(
         new MaterialPageRoute(builder: (context) {
@@ -170,6 +175,20 @@ class _SDMMMineState extends State<SDMMMine> {
         ),
       );
     }
+    else if (index == 6) { // 退出登录
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print('666666');
+      prefs.remove(kUserInfoCacheKey).then((bool success) {
+        print('666666 success= $success');
+        if (success) {
+          final userModel = Provider.of<UserModel>(context, listen: false);
+          userModel.setIsLogin(false);
+          userModel.clear();
+        } else {
+          FLToast.showError(text: '退出失败');
+        }
+      });
+    }
   }
 
   // 跳转用户详情
@@ -192,6 +211,7 @@ class _SDMMMineState extends State<SDMMMine> {
     items.add(MineItemModel(title: '使用帮助', iconName: ''));
     items.add(MineItemModel(title: '设置', iconName: ''));
     items.add(MineItemModel(title: '天气预报', iconName: ''));
+    items.add(MineItemModel(title: '退出登录', iconName: ''));
     super.initState();
   }
 

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:sdmm/page/SDMMBase/shopping_cart_view.dart';
 import 'package:sdmm/page/apply/order/model/order_basic_types.dart';
 import 'package:sdmm/public/xmh_loading_state_mixin.dart';
 import './order_scaffold.dart';
@@ -14,7 +15,6 @@ import './model/customer_model.dart';
 import 'package:sdmm/page/SDMMBase/empty_widget.dart';
 //import 'package:flutter_loading/flutter_loading.dart';
 
-
 class ServiceOrder extends StatefulWidget {
   ServiceOrder({this.navBarTitle, this.customerModel});
   final String navBarTitle;
@@ -26,11 +26,9 @@ class ServiceOrder extends StatefulWidget {
 
 class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
   List<CardItemModel> _dataList = new List();
-  var dismiss;
 
   @override
   void initState() {
-
     super.initState();
     widget.customerModel.user_id = 23923;
     getData1();
@@ -43,13 +41,29 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
         appBar: new AppBar(
           title: new Text(widget.navBarTitle),
         ),
-        body: _dataList.isEmpty
-            ? EmptyView(onTap: () {
-          widget.customerModel.user_id = 23923;
-          getData1();
-        })
-            : OrderScaffold(
-          dataList: _dataList,
+        body: Container(
+          child: Stack(
+            alignment: Alignment.center,
+            fit: StackFit.expand, // 此参数用于确定没有定位的子组件如何去适应Stack的大小。StackFit.loose表示使用子组件的大小，StackFit.expand表示扩伸到Stack的大小。
+            children: <Widget>[
+              // 无数据加载空视图，有数据加载内容View
+              _dataList.isEmpty
+                  ? EmptyView(onTap: () {
+                      widget.customerModel.user_id = 23923;
+                      getData1();
+                    })
+                  : OrderScaffold(
+                      dataList: _dataList,
+                    ),
+              // 购物车View
+              Positioned(
+                bottom: 49.0,
+                width: MediaQuery.of(context).size.width,
+                height: 56.0,
+                child: ShoppingCartView(),
+              ),
+            ],
+          ),
         ),
       ),
     );

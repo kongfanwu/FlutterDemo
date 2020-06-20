@@ -5,7 +5,7 @@ import './model/goods_model.dart';
 import 'model/card_model.dart';
 //import './model/card_model.dart';
 import 'package:flui/flui.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+//import 'package:fluttertoast/fluttertoast.dart';
 
 class OrderContentScaffold extends StatefulWidget {
   OrderContentScaffold({this.goods_list, this.cardModel});

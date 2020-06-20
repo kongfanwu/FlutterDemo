@@ -8,12 +8,18 @@ import 'package:flutter/material.dart';
 import 'package:sdmm/networking/DioManager.dart';
 import 'package:flui/flui.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'dart:convert';
 
 /* 遗留问题
 * 1 账号需要正则校验
 * 2 弹出键盘有警告
 * 3 登录后的 userModel 怎么替换成状态管理的 user
 * */
+
+// 缓存用户信息key
+const String kUserInfoCacheKey = 'kUserInfoCacheKey';
 
 class Login extends StatefulWidget {
   @override
@@ -39,9 +45,13 @@ class _LoginState extends State<Login> {
         var dismiss = FLToast.loading(text:'登录中...');
         DioManager.getInstance().post(url, params: params, successCallBack: (data, success) {
           dismiss();
-          print('-------------');
-          final loginUser = UserModel.fromJson(data['data']);
+          final userData = data['data'];
 
+          // 1 缓存
+          cacheUserData(userData);
+
+          // 2 序列化 model
+          final loginUser = UserModel.fromJson(userData);
           final user = context.read<UserModel>();
           // 妈了个巴子的，这里不知道怎么将 loginUser 替换成状态管理的 user 暂且硬写吧
           user.id = loginUser.id;
@@ -57,6 +67,16 @@ class _LoginState extends State<Login> {
           dismiss();
         });
     }
+  }
+
+  void cacheUserData(Map<String, dynamic> userData) async {
+    if (userData == null) return;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String userJsonStr = json.encode(userData);
+    print('userJsonStr = $userJsonStr');
+    prefs.setString(kUserInfoCacheKey, userJsonStr).then((bool success) => print('缓存结果:$success'));
+    
   }
 
   void validateForm() {

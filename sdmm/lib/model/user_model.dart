@@ -30,6 +30,17 @@ class UserModel with ChangeNotifier  {
     this.isLogin = isLogin;
     notifyListeners(); // 发布更新通知
   }
+
+  void clear() {
+    id = null;
+    manage_type = null;
+    name = null;
+    phone = null;
+    password = null;
+    token = null;
+    join_code = null;
+    isLogin = false;
+  }
 }
 
 @JsonSerializable()
