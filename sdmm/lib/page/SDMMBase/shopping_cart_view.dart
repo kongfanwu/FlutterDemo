@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ShoppingCartView extends StatefulWidget {
-//  const ShoppingCartView({
-//    this.keyboardType = TextInputType.text,
-//  });
-//
-//  final TextInputType keyboardType;
+  const ShoppingCartView({
+    this.price = 0.0,
+  });
+
+  final double price;
 
   @override
   _ShoppingCartViewState createState() => _ShoppingCartViewState();
@@ -54,7 +54,7 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          '共¥ 9800',
+                          '共¥ ${widget.price}',
                           style: TextStyle(color: Colors.white, fontSize: 15),
                         ),
                       ),

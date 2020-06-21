@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sdmm/page/SDMMBase/shopping_cart_view.dart';
 import 'package:sdmm/page/apply/order/model/order_basic_types.dart';
+import 'package:sdmm/page/apply/order/model/shopping_cart_manager.dart';
 import 'package:sdmm/public/xmh_loading_state_mixin.dart';
 import './order_scaffold.dart';
 import 'package:sdmm/networking/DioManager.dart';
@@ -13,7 +14,7 @@ import './order_content_scaffold.dart';
 import 'card_order_content_scaffold.dart';
 import './model/customer_model.dart';
 import 'package:sdmm/page/SDMMBase/empty_widget.dart';
-//import 'package:flutter_loading/flutter_loading.dart';
+import 'package:provider/provider.dart';
 
 class ServiceOrder extends StatefulWidget {
   ServiceOrder({this.navBarTitle, this.customerModel});
@@ -26,7 +27,7 @@ class ServiceOrder extends StatefulWidget {
 
 class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
   List<CardItemModel> _dataList = new List();
-
+  final _shoppingCartManager = ShoppingCartManager();
   @override
   void initState() {
     super.initState();
@@ -41,28 +42,38 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
         appBar: new AppBar(
           title: new Text(widget.navBarTitle),
         ),
-        body: Container(
-          child: Stack(
-            alignment: Alignment.center,
-            fit: StackFit.expand, // 此参数用于确定没有定位的子组件如何去适应Stack的大小。StackFit.loose表示使用子组件的大小，StackFit.expand表示扩伸到Stack的大小。
-            children: <Widget>[
-              // 无数据加载空视图，有数据加载内容View
-              _dataList.isEmpty
-                  ? EmptyView(onTap: () {
-                      widget.customerModel.user_id = 23923;
-                      getData1();
-                    })
-                  : OrderScaffold(
-                      dataList: _dataList,
-                    ),
-              // 购物车View
-              Positioned(
-                bottom: 49.0,
-                width: MediaQuery.of(context).size.width,
-                height: 56.0,
-                child: ShoppingCartView(),
-              ),
-            ],
+        body: MultiProvider(
+          // 添加购物车状态管理者
+          providers: [ChangeNotifierProvider.value(value: _shoppingCartManager),],
+          child: Container(
+            child: Stack(
+              alignment: Alignment.center,
+              fit: StackFit.expand, // 此参数用于确定没有定位的子组件如何去适应Stack的大小。StackFit.loose表示使用子组件的大小，StackFit.expand表示扩伸到Stack的大小。
+              children: <Widget>[
+                // 无数据加载空视图，有数据加载内容View
+                _dataList.isEmpty
+                    ? EmptyView(onTap: () {
+                  widget.customerModel.user_id = 23923;
+                  getData1();
+                })
+                    : OrderScaffold(
+                  dataList: _dataList,
+                ),
+                // 购物车View
+                Positioned(
+                  bottom: 49.0,
+                  width: MediaQuery.of(context).size.width,
+                  height: 56.0,
+                  child: Consumer<ShoppingCartManager>(
+                    builder: (context, ShoppingCartManager shoppingCartManager, child) {
+                      return ShoppingCartView(
+                        price: shoppingCartManager.allPrice,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -230,7 +241,9 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
         return CardItemModel(
           title: e.name,
           cardModel: e,
-          child: CardOrderContentScaffold(e),
+          child: CardOrderContentScaffold(e, onAddShoppingBlock: (GoodsModel goodsModel){
+            print(goodsModel.name);
+          },),
         );
       }).toList();
       childrenItems.addAll(timeCardItemList);
@@ -265,6 +278,12 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
           goods_list: goodsList,
           child: OrderContentScaffold(
             goods_list: goodsList,
+            onAddShoppingBlock: (GoodsModel goodsModel) {
+              print(goodsModel.price);
+              // 获取购物车管理者model,并添加到购物车. 注意： 这里的context 会直接向上查找，但是 ShoppingCartManager 在本 context 注册的，会出现找不到情况
+//              final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
+              _shoppingCartManager.add(goodsModel);
+            },
           ),
         ));
       }
@@ -285,6 +304,9 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
           goods_list: goodsGoodsList,
           child: OrderContentScaffold(
             goods_list: goodsGoodsList,
+            onAddShoppingBlock: (GoodsModel goodsModel) {
+
+            },
           ),
         ));
       }

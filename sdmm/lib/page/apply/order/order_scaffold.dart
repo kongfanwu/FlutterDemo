@@ -3,6 +3,7 @@ import 'package:sdmm/public/tool_model.dart';
 import './model/goods_model.dart';
 import './model/card_model.dart';
 
+/// 通用内容
 class OrderScaffold extends StatefulWidget {
   OrderScaffold({this.dataList});
 

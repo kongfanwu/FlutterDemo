@@ -8,11 +8,14 @@ import 'package:flui/flui.dart';
 //import 'package:fluttertoast/fluttertoast.dart';
 
 class OrderContentScaffold extends StatefulWidget {
-  OrderContentScaffold({this.goods_list, this.cardModel});
+  OrderContentScaffold({this.goods_list, this.cardModel, this.onAddShoppingBlock});
   // 项目、产品 model
   List <GoodsModel> goods_list;
   // 卡 model
   CardModel cardModel;
+
+  // 添加到购物车回调
+  final void Function(GoodsModel goodsModel) onAddShoppingBlock;
 
   @override
   _OrderContentScaffoldState createState() => _OrderContentScaffoldState();
@@ -118,9 +121,10 @@ class _OrderContentScaffoldState extends State<OrderContentScaffold> {
                       minWidth: 24,
                       minHeight: 24,
                     ),
-                    icon:  Icon(Icons.shopping_cart),
+                    icon: Icon(Icons.shopping_cart),
                     onPressed: (){
-
+                      // 回调
+                      widget.onAddShoppingBlock(goodsModel);
                     },
                   ),
                 ),
