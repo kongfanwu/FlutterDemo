@@ -59,6 +59,43 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
                     : OrderScaffold(
                   dataList: _dataList,
                 ),
+                // 购物车详情
+                Positioned(
+                  bottom: 0,
+                  width: MediaQuery.of(context).size.width,
+                  height: 316.0,
+                  child: Container(
+                    color: Colors.blue,
+                    padding: EdgeInsets.only(bottom: 105),
+                    child: Container(
+                      color: Colors.orange,
+                      child: Column(
+                        children: <Widget>[
+                          // 头部视图
+                          Container(
+                            color: Color.fromARGB(255, 247, 247, 247),
+                            height: 48,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Text('已选商品', style: TextStyle(color: Color(0xff999999), fontSize: 16),),
+                                FlatButton.icon(
+                                  icon: Icon(Icons.delete_outline, size: 17, color: Colors.red,),
+                                  label: Text('清空', style: TextStyle(color: Color(0xff666666), fontSize: 15),), 
+                                  padding: EdgeInsets.all(0.1),
+                                  onPressed: () {
+                                    print('清空');
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+
+                    ),
+                  )
+                ),
                 // 购物车View
                 Positioned(
                   bottom: 49.0,
