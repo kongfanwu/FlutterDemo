@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:sdmm/page/SDMMBase/shopping_cart_Info.dart';
 import 'package:sdmm/page/SDMMBase/shopping_cart_view.dart';
 import 'package:sdmm/page/apply/order/model/order_basic_types.dart';
 import 'package:sdmm/page/apply/order/model/shopping_cart_manager.dart';
@@ -28,6 +29,9 @@ class ServiceOrder extends StatefulWidget {
 class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
   List<CardItemModel> _dataList = new List();
   final _shoppingCartManager = ShoppingCartManager();
+  // 是否显示购物车详情
+  var _showShoppingCartInfo = false;
+
   @override
   void initState() {
     super.initState();
@@ -42,8 +46,8 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
         appBar: new AppBar(
           title: new Text(widget.navBarTitle),
         ),
+        // 添加购物车状态管理者
         body: MultiProvider(
-          // 添加购物车状态管理者
           providers: [ChangeNotifierProvider.value(value: _shoppingCartManager),],
           child: Container(
             child: Stack(
@@ -52,50 +56,24 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
               children: <Widget>[
                 // 无数据加载空视图，有数据加载内容View
                 _dataList.isEmpty
-                    ? EmptyView(onTap: () {
+                ? EmptyView(onTap: () {
                   widget.customerModel.user_id = 23923;
                   getData1();
                 })
-                    : OrderScaffold(
+                : OrderScaffold(
                   dataList: _dataList,
                 ),
                 // 购物车详情
-                Positioned(
+                _showShoppingCartInfo
+                ? Positioned(
                   bottom: 0,
                   width: MediaQuery.of(context).size.width,
-                  height: 316.0,
-                  child: Container(
-                    color: Colors.blue,
-                    padding: EdgeInsets.only(bottom: 105),
-                    child: Container(
-                      color: Colors.orange,
-                      child: Column(
-                        children: <Widget>[
-                          // 头部视图
-                          Container(
-                            color: Color.fromARGB(255, 247, 247, 247),
-                            height: 48,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text('已选商品', style: TextStyle(color: Color(0xff999999), fontSize: 16),),
-                                FlatButton.icon(
-                                  icon: Icon(Icons.delete_outline, size: 17, color: Colors.red,),
-                                  label: Text('清空', style: TextStyle(color: Color(0xff666666), fontSize: 15),), 
-                                  padding: EdgeInsets.all(0.1),
-                                  onPressed: () {
-                                    print('清空');
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-
-                    ),
-                  )
-                ),
+                  height: MediaQuery.of(context).size.height,
+                  child: ShoppingCartInfo(
+                    onRemovePressed: () => setState(() => _showShoppingCartInfo = !_showShoppingCartInfo),
+                  ),
+                )
+                : SizedBox(),
                 // 购物车View
                 Positioned(
                   bottom: 49.0,
@@ -105,6 +83,10 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
                     builder: (context, ShoppingCartManager shoppingCartManager, child) {
                       return ShoppingCartView(
                         price: shoppingCartManager.allPrice,
+                        showShoppingCartInfoPressed: () => setState(() => _showShoppingCartInfo = !_showShoppingCartInfo),// 显示隐藏购物车
+                        payPressed: () {
+                          print('去支付');
+                        },
                       );
                     },
                   ),

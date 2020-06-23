@@ -3,9 +3,15 @@ import 'package:flutter/material.dart';
 class ShoppingCartView extends StatefulWidget {
   const ShoppingCartView({
     this.price = 0.0,
+    this.showShoppingCartInfoPressed,
+    this.payPressed,
   });
 
   final double price;
+  // 显示购物车详情回调
+  final VoidCallback showShoppingCartInfoPressed;
+  // 支付回调
+  final VoidCallback payPressed;
 
   @override
   _ShoppingCartViewState createState() => _ShoppingCartViewState();
@@ -33,10 +39,17 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
                   margin: EdgeInsets.only(top: 10, left: 56 / 2),
                   color: Color(0xff333333),
                 ),
-                Image.asset(
-                  'static/img/gouwuche.png',
-                  height: 56,
+                FlatButton(
+                  padding: EdgeInsets.all(0),
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  child: Image.asset(
+                    'static/img/gouwuche.png',
+                    height: 56,
+                  ),
+                  onPressed: widget.showShoppingCartInfoPressed,
                 ),
+
               ],
             ),
           ),
@@ -71,9 +84,7 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
                     ),
                     child: FlatButton(
                       child: Text('去支付', style: TextStyle(color: Colors.white, fontSize: 17),),
-                      onPressed: () {
-
-                      },
+                      onPressed: widget.payPressed,
                     ),
                   ),
                 ],
