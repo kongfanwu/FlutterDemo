@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sdmm/networking/JsonSerializableDemo.dart';
+import 'package:sdmm/public/GlobalConfig.dart';
 
 class SDMMAI extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class _SDMMAIState extends State<SDMMAI> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
   }
 
   @override
