@@ -9,10 +9,12 @@ import 'package:sdmm/page/apply/order/model/shopping_cart_manager.dart';
 class ShoppingCartInfo extends StatefulWidget {
   ShoppingCartInfo({
     this.onRemovePressed,
+    this.changeNumberPressed,
   });
 
   // 移除视图事件回调
   final VoidCallback onRemovePressed;
+  final VoidCallback changeNumberPressed;
 
   @override
   _ShoppingCartInfoState createState() => _ShoppingCartInfoState();
@@ -118,6 +120,8 @@ class _ShoppingCartInfoState extends State<ShoppingCartInfo> {
                     return;
                   }
                   goodsModel.buyCount = buyCount;
+                  // 回调
+                  widget.changeNumberPressed();
                   // 更新购物车价格
                   shoppingCartManager.add(goodsModel);
 

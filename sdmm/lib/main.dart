@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sdmm/public/GlobalConfig.dart';
 import './page/SDMMMessage.dart';
 import './page/SDMMAI.dart';
 import './page/SDMMWork.dart';
@@ -67,7 +68,7 @@ class _MyAppState extends State<MyApp> {
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
-          primaryColor: Colors.red,
+          primaryColor: GlobalConfig.kColorE73462,
         ),
         localizationsDelegates: [
           GlobalEasyRefreshLocalizations.delegate,
@@ -115,6 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+
     super.initState();
     _barItems = [
       BottomNavigationBarItem(

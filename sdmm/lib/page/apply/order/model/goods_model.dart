@@ -66,4 +66,9 @@ class GoodsModel {
   //不同的类使用不同的mixin即可
   factory GoodsModel.fromJson(Map<String, dynamic> json) => _$GoodsModelFromJson(json);
   Map<String, dynamic> toJson() => _$GoodsModelToJson(this);
+
+  /// 改变 buyCount
+  changeBuyCount(int value) {
+    buyCount = value;
+  }
 }

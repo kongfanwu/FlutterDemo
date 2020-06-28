@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/single_child_widget.dart';
 import 'package:sdmm/page/SDMMBase/shopping_cart_Info.dart';
 import 'package:sdmm/page/SDMMBase/shopping_cart_view.dart';
 import 'package:sdmm/page/apply/order/model/order_basic_types.dart';
 import 'package:sdmm/page/apply/order/model/shopping_cart_manager.dart';
+import 'package:sdmm/page/apply/order/service_order_select_jishi.dart';
 import 'package:sdmm/public/xmh_loading_state_mixin.dart';
 import './order_scaffold.dart';
 import 'package:sdmm/networking/DioManager.dart';
@@ -39,64 +41,133 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
     getData1();
   }
 
-  @override
+    @override
   Widget build(BuildContext context) {
-    return buildLoadingContainer(
+    return MultiProvider(
+      providers: [ChangeNotifierProvider.value(value: _shoppingCartManager)],
       child: Scaffold(
         appBar: new AppBar(
           title: new Text(widget.navBarTitle),
         ),
-        // 添加购物车状态管理者
-        body: MultiProvider(
-          providers: [ChangeNotifierProvider.value(value: _shoppingCartManager),],
-          child: Container(
-            child: Stack(
-              alignment: Alignment.center,
-              fit: StackFit.expand, // 此参数用于确定没有定位的子组件如何去适应Stack的大小。StackFit.loose表示使用子组件的大小，StackFit.expand表示扩伸到Stack的大小。
-              children: <Widget>[
-                // 无数据加载空视图，有数据加载内容View
-                _dataList.isEmpty
-                ? EmptyView(onTap: () {
-                  widget.customerModel.user_id = 23923;
-                  getData1();
-                })
-                : OrderScaffold(
-                  dataList: _dataList,
-                ),
-                // 购物车详情
-                _showShoppingCartInfo
-                ? Positioned(
-                  bottom: 0,
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: ShoppingCartInfo(
-                    onRemovePressed: () => setState(() => _showShoppingCartInfo = !_showShoppingCartInfo),
-                  ),
-                )
-                : SizedBox(),
-                // 购物车View
-                Positioned(
-                  bottom: 49.0,
-                  width: MediaQuery.of(context).size.width,
-                  height: 56.0,
-                  child: Consumer<ShoppingCartManager>(
-                    builder: (context, ShoppingCartManager shoppingCartManager, child) {
-                      return ShoppingCartView(
-                        price: shoppingCartManager.allPrice,
-                        showShoppingCartInfoPressed: () => setState(() => _showShoppingCartInfo = !_showShoppingCartInfo),// 显示隐藏购物车
-                        payPressed: () {
-                          print('去支付');
-                        },
-                      );
+        body: Center(
+          child: Builder(builder: (BuildContext context) {
+            return FlatButton(
+              child: Text('button'),
+              onPressed: (){
+
+                final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
+                print(shoppingCartManager.goodsList);
+
+                Navigator.of(context).push(
+                  new MaterialPageRoute(
+                    builder: (context) {
+                      return ServiceOrderSelectJishi(
+                        navBarTitle: '服务订单',
+                        customerModel: widget.customerModel,
+                      ); // push
                     },
                   ),
-                ),
-              ],
-            ),
-          ),
+                );
+
+
+              },
+            );
+          }),
         ),
       ),
     );
+  }
+
+//  @override
+//  Widget build(BuildContext context) {
+//    return MultiProvider(
+//      providers: [ChangeNotifierProvider.value(value: _shoppingCartManager)],
+//      child: buildLoadingContainer(
+//        child: Scaffold(
+//          appBar: new AppBar(
+//            title: new Text(widget.navBarTitle),
+//          ),
+//          body: Container(
+//            child: Stack(
+//              alignment: Alignment.center,
+//              fit: StackFit
+//                  .expand, // 此参数用于确定没有定位的子组件如何去适应Stack的大小。StackFit.loose表示使用子组件的大小，StackFit.expand表示扩伸到Stack的大小。
+//              children: <Widget>[
+//                // 无数据加载空视图，有数据加载内容View
+//                _dataList.isEmpty
+//                    ? EmptyView(onTap: () {
+//                  widget.customerModel.user_id = 23923;
+//                  getData1();
+//                })
+//                    : OrderScaffold(
+//                  dataList: _dataList,
+//                ),
+//                // 购物车详情
+//                _showShoppingCartInfo
+//                    ? Positioned(
+//                  bottom: 0,
+//                  width: MediaQuery.of(context).size.width,
+//                  height: MediaQuery.of(context).size.height,
+//                  child: ShoppingCartInfo(
+//                    onRemovePressed: () => setState(() =>
+//                    _showShoppingCartInfo = !_showShoppingCartInfo),
+//                  ),
+//                )
+//                    : SizedBox(),
+//                // 购物车View
+//                Positioned(
+//                  bottom: 49.0,
+//                  width: MediaQuery.of(context).size.width,
+//                  height: 56.0,
+//                  child: Consumer<ShoppingCartManager>(
+//                    builder: (context, ShoppingCartManager shoppingCartManager,
+//                        child) {
+//                      return Builder(
+//                        builder: (BuildContext context) {
+//                          return ShoppingCartView(
+//                            price: shoppingCartManager.allPrice,
+//                            showShoppingCartInfoPressed: () => setState(() =>
+//                            _showShoppingCartInfo =
+//                            !_showShoppingCartInfo), // 显示隐藏购物车
+//                            payPressed: () {
+//                              print('去支付');
+//                              final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
+//                              print(shoppingCartManager.goodsList);
+//
+//                              Navigator.of(context).push(
+//                                new MaterialPageRoute(
+//                                  builder: (context) {
+//                                    return ServiceOrderSelectJishi(
+//                                      navBarTitle: '服务订单',
+//                                      customerModel: widget.customerModel,
+//                                    ); // push
+//                                  },
+//                                ),
+//                              );
+//
+////                          _displaySnackBar(context);
+//
+//
+//                            },
+//                          );
+//                        },
+//                      );
+//                    },
+//                  ),
+//                ),
+//              ],
+//            ),
+//          ),
+//        ),
+//      ),
+//    );
+//  }
+
+  _displaySnackBar(BuildContext context) {
+    final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
+    print(shoppingCartManager.goodsList);
+//    final snackBar = SnackBar(content: Text('老孟'));
+//    Scaffold.of(context).showSnackBar(snackBar);
   }
 
   //服务单-处方服务选择
@@ -260,9 +331,12 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
         return CardItemModel(
           title: e.name,
           cardModel: e,
-          child: CardOrderContentScaffold(e, onAddShoppingBlock: (GoodsModel goodsModel){
-            print(goodsModel.name);
-          },),
+          child: CardOrderContentScaffold(
+            e,
+            onAddShoppingBlock: (GoodsModel goodsModel) {
+              print(goodsModel.name);
+            },
+          ),
         );
       }).toList();
       childrenItems.addAll(timeCardItemList);
@@ -323,9 +397,7 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
           goods_list: goodsGoodsList,
           child: OrderContentScaffold(
             goods_list: goodsGoodsList,
-            onAddShoppingBlock: (GoodsModel goodsModel) {
-
-            },
+            onAddShoppingBlock: (GoodsModel goodsModel) {},
           ),
         ));
       }
