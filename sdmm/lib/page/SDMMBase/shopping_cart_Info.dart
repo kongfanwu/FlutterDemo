@@ -120,6 +120,7 @@ class _ShoppingCartInfoState extends State<ShoppingCartInfo> {
                   goodsModel.buyCount = buyCount;
                   // 更新购物车价格
                   shoppingCartManager.add(goodsModel);
+
                 },
               ),
             ),
