@@ -38,41 +38,72 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
   void initState() {
     super.initState();
     widget.customerModel.user_id = 23923;
-    getData1();
+//    getData1();
   }
 
     @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider.value(value: _shoppingCartManager)],
+      providers: [ChangeNotifierProvider.value(value:  ShoppingCartManager())],
       child: Scaffold(
         appBar: new AppBar(
           title: new Text(widget.navBarTitle),
         ),
-        body: Center(
-          child: Builder(builder: (BuildContext context) {
-            return FlatButton(
-              child: Text('button'),
+        body: Column(
+          children: <Widget>[
+            Builder(builder: (BuildContext context) {
+              return FlatButton(
+                child: Text('button'),
+                onPressed: (){
+                  final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
+                  print(shoppingCartManager.goodsList);
+
+                  Navigator.of(context).push(
+                    new MaterialPageRoute(
+                      builder: (context) {
+                        return ServiceOrderSelectJishi(
+                          navBarTitle: '服务订单',
+                          customerModel: widget.customerModel,
+                        ); // push
+                      },
+                    ),
+                  );
+                },
+              );
+            }),
+            Builder(builder: (BuildContext context) {
+              return FlatButton(
+                child: Text('button1'),
+                onPressed: (){
+                  final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
+                  print(shoppingCartManager.goodsList);
+
+                  Navigator.of(context).push(
+                    new MaterialPageRoute(
+                      builder: (context) {
+                        return Test(); // push
+                      },
+                    ),
+                  );
+                },
+              );
+            }),
+
+            FlatButton(
+              child: Text('button2'),
               onPressed: (){
-
-                final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
-                print(shoppingCartManager.goodsList);
-
+//                final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
+//                print(shoppingCartManager.goodsList);
                 Navigator.of(context).push(
                   new MaterialPageRoute(
                     builder: (context) {
-                      return ServiceOrderSelectJishi(
-                        navBarTitle: '服务订单',
-                        customerModel: widget.customerModel,
-                      ); // push
+                      return Test(); // push
                     },
                   ),
                 );
-
-
               },
-            );
-          }),
+            ),
+          ],
         ),
       ),
     );
@@ -409,5 +440,14 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
     setState(() {
       this._dataList = _dataList;
     });
+  }
+}
+
+
+class Test extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
+    return Container();
   }
 }

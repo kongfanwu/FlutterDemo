@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'counterModel.dart';
 import 'package:provider/provider.dart';
 
+class ShoppingCartManager with ChangeNotifier {
+  var allPrice = 1.0;
+}
+
 void main() {
   final counter = CounterModel();
   final textSize = 48;
@@ -23,10 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark(),
-      home: Container(
-        color: Colors.red,
-      ),
-//      home: FirstScreen(),
+      home: FirstScreen(),
     );
   }
 }
@@ -37,21 +38,24 @@ class FirstScreen extends StatelessWidget {
     final _counter = Provider.of<CounterModel>(context);
     final textSize = Provider.of<int>(context).toDouble();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('FirstPage'),
-      ),
-      body: Center(
-        child: Text(
-          'Value: ${_counter.value}',
-          style: TextStyle(fontSize: textSize),
+    return MultiProvider(
+        providers: [ChangeNotifierProvider.value(value:  ShoppingCartManager())],
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('FirstPage'),
+          ),
+          body: Center(
+            child: Text(
+              'Value: ${_counter.value}',
+              style: TextStyle(fontSize: textSize),
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => SecondPage())),
+            child: Icon(Icons.navigate_next),
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => SecondPage())),
-        child: Icon(Icons.navigate_next),
-      ),
     );
   }
 }
@@ -76,7 +80,13 @@ class SecondPage extends StatelessWidget {
       floatingActionButton: Consumer<CounterModel>(
         // child：它用来构建那些与 Model 无关的部分，在多次运行 builder 中，child 不会进行重建。
         builder: (context, CounterModel counter, child) => FloatingActionButton(
-        onPressed: counter.increment,
+        onPressed: (){
+          counter.increment();
+
+//          final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
+//          print(shoppingCartManager.allPrice);
+//          print(context.owner.f);
+        },
         child: child, // child 就是 Icon(Icons.add), 并且他不会刷新，提高性能
       ),
         child: Icon(Icons.add),

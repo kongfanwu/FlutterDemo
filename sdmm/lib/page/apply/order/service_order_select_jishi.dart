@@ -20,6 +20,7 @@ class _ServiceOrderSelectJishiState extends State<ServiceOrderSelectJishi> {
   @override
   Widget build(BuildContext context) {
     final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
+//    context.dependOnInheritedElement(ancestor)
 //    final shoppingCartManager = context.watch<ShoppingCartManager>();
 
 //  print('Apply1-----------${context.read<ShoppingCartManager>().goodsList}'); // NO
@@ -155,3 +156,5 @@ class _ServiceOrderSelectJishiState extends State<ServiceOrderSelectJishi> {
 //    );
   }
 }
+
+
