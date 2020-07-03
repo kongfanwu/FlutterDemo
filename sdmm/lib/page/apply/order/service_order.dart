@@ -43,6 +43,7 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
 
     @override
   Widget build(BuildContext context) {
+
     return MultiProvider(
       providers: [ChangeNotifierProvider.value(value:  ShoppingCartManager())],
       child: Scaffold(
@@ -88,7 +89,6 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
                 },
               );
             }),
-
             FlatButton(
               child: Text('button2'),
               onPressed: (){

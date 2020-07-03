@@ -27,7 +27,7 @@ class _ServiceOrderSelectJishiState extends State<ServiceOrderSelectJishi> {
 //  print('Apply2-----------${context.watch<ShoppingCartManager>().goodsList}'); // OK
 //  print('Apply3--------${Provider.of<ShoppingCartManager>(context, listen: true).goodsList}'); // OK
 //  print('Apply4---------${context.select((ShoppingCartManager p) => p.goodsList)}'); // OK
-
+    InheritedWidget
    return Container();
 
 //    return Scaffold(
