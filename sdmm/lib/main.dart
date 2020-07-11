@@ -16,6 +16,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
+import 'page/apply/order/model/shopping_cart_manager.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
@@ -26,6 +28,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   var _userModel = UserModel(null, null, null, null, null, null, null, false);
   FLToastDefaults _toastDefaults = FLToastDefaults();
+  // 订单管理模块，购物车管理者
+  final _shoppingCartManager = ShoppingCartManager();
 
   // 获取缓存，并序列化成 model，并赋值给 _userModel
   void getUserInfoModel() async {
@@ -62,6 +66,7 @@ class _MyAppState extends State<MyApp> {
       providers: [
 //            ChangeNotifierProvider(create: (_) => _userModel), // 共享的对象
         ChangeNotifierProvider.value(value: _userModel),
+        ChangeNotifierProvider.value(value: _shoppingCartManager),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

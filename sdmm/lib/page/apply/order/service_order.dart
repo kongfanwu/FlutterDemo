@@ -30,7 +30,6 @@ class ServiceOrder extends StatefulWidget {
 
 class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
   List<CardItemModel> _dataList = new List();
-  final _shoppingCartManager = ShoppingCartManager();
   // 是否显示购物车详情
   var _showShoppingCartInfo = false;
 
@@ -39,160 +38,90 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
     super.initState();
     widget.customerModel.user_id = 23923;
 //    getData1();
+
+    // 清空购物车管理者对象，
+    final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
+    shoppingCartManager.clear();
   }
 
-    @override
+  @override
   Widget build(BuildContext context) {
-
-    return MultiProvider(
-      providers: [ChangeNotifierProvider.value(value:  ShoppingCartManager())],
+    return buildLoadingContainer(
       child: Scaffold(
         appBar: new AppBar(
           title: new Text(widget.navBarTitle),
         ),
-        body: Column(
-          children: <Widget>[
-            Builder(builder: (BuildContext context) {
-              return FlatButton(
-                child: Text('button'),
-                onPressed: (){
-                  final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
-                  print(shoppingCartManager.goodsList);
+        body: Container(
+          child: Stack(
+            alignment: Alignment.center,
+            fit: StackFit
+                .expand, // 此参数用于确定没有定位的子组件如何去适应Stack的大小。StackFit.loose表示使用子组件的大小，StackFit.expand表示扩伸到Stack的大小。
+            children: <Widget>[
+              // 无数据加载空视图，有数据加载内容View
+              _dataList.isEmpty
+                  ? EmptyView(onTap: () {
+                widget.customerModel.user_id = 23923;
+                getData1();
+              })
+                  : OrderScaffold(
+                dataList: _dataList,
+              ),
+              // 购物车详情
+              _showShoppingCartInfo
+                  ? Positioned(
+                bottom: 0,
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: ShoppingCartInfo(
+                  onRemovePressed: () => setState(() =>
+                  _showShoppingCartInfo = !_showShoppingCartInfo),
+                ),
+              )
+                  : SizedBox(),
+              // 购物车View
+              Positioned(
+                bottom: 49.0,
+                width: MediaQuery.of(context).size.width,
+                height: 56.0,
+                child: Consumer<ShoppingCartManager>(
+                  builder: (context, ShoppingCartManager shoppingCartManager,
+                      child) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return ShoppingCartView(
+                          price: shoppingCartManager.allPrice,
+                          showShoppingCartInfoPressed: () => setState(() =>
+                          _showShoppingCartInfo =
+                          !_showShoppingCartInfo), // 显示隐藏购物车
+                          payPressed: () {
+                            print('去支付');
+                            final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
+                            print(shoppingCartManager.goodsList);
 
-                  Navigator.of(context).push(
-                    new MaterialPageRoute(
-                      builder: (context) {
-                        return ServiceOrderSelectJishi(
-                          navBarTitle: '服务订单',
-                          customerModel: widget.customerModel,
-                        ); // push
+                            Navigator.of(context).push(
+                              new MaterialPageRoute(
+                                builder: (context) {
+                                  return ServiceOrderSelectJishi(
+                                    navBarTitle: '服务订单',
+                                    customerModel: widget.customerModel,
+                                  ); // push
+                                },
+                              ),
+                            );
+//                          _displaySnackBar(context);
+                          },
+                        );
                       },
-                    ),
-                  );
-                },
-              );
-            }),
-            Builder(builder: (BuildContext context) {
-              return FlatButton(
-                child: Text('button1'),
-                onPressed: (){
-                  final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
-                  print(shoppingCartManager.goodsList);
-
-                  Navigator.of(context).push(
-                    new MaterialPageRoute(
-                      builder: (context) {
-                        return Test(); // push
-                      },
-                    ),
-                  );
-                },
-              );
-            }),
-            FlatButton(
-              child: Text('button2'),
-              onPressed: (){
-//                final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
-//                print(shoppingCartManager.goodsList);
-                Navigator.of(context).push(
-                  new MaterialPageRoute(
-                    builder: (context) {
-                      return Test(); // push
-                    },
-                  ),
-                );
-              },
-            ),
-          ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-
-//  @override
-//  Widget build(BuildContext context) {
-//    return MultiProvider(
-//      providers: [ChangeNotifierProvider.value(value: _shoppingCartManager)],
-//      child: buildLoadingContainer(
-//        child: Scaffold(
-//          appBar: new AppBar(
-//            title: new Text(widget.navBarTitle),
-//          ),
-//          body: Container(
-//            child: Stack(
-//              alignment: Alignment.center,
-//              fit: StackFit
-//                  .expand, // 此参数用于确定没有定位的子组件如何去适应Stack的大小。StackFit.loose表示使用子组件的大小，StackFit.expand表示扩伸到Stack的大小。
-//              children: <Widget>[
-//                // 无数据加载空视图，有数据加载内容View
-//                _dataList.isEmpty
-//                    ? EmptyView(onTap: () {
-//                  widget.customerModel.user_id = 23923;
-//                  getData1();
-//                })
-//                    : OrderScaffold(
-//                  dataList: _dataList,
-//                ),
-//                // 购物车详情
-//                _showShoppingCartInfo
-//                    ? Positioned(
-//                  bottom: 0,
-//                  width: MediaQuery.of(context).size.width,
-//                  height: MediaQuery.of(context).size.height,
-//                  child: ShoppingCartInfo(
-//                    onRemovePressed: () => setState(() =>
-//                    _showShoppingCartInfo = !_showShoppingCartInfo),
-//                  ),
-//                )
-//                    : SizedBox(),
-//                // 购物车View
-//                Positioned(
-//                  bottom: 49.0,
-//                  width: MediaQuery.of(context).size.width,
-//                  height: 56.0,
-//                  child: Consumer<ShoppingCartManager>(
-//                    builder: (context, ShoppingCartManager shoppingCartManager,
-//                        child) {
-//                      return Builder(
-//                        builder: (BuildContext context) {
-//                          return ShoppingCartView(
-//                            price: shoppingCartManager.allPrice,
-//                            showShoppingCartInfoPressed: () => setState(() =>
-//                            _showShoppingCartInfo =
-//                            !_showShoppingCartInfo), // 显示隐藏购物车
-//                            payPressed: () {
-//                              print('去支付');
-//                              final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
-//                              print(shoppingCartManager.goodsList);
-//
-//                              Navigator.of(context).push(
-//                                new MaterialPageRoute(
-//                                  builder: (context) {
-//                                    return ServiceOrderSelectJishi(
-//                                      navBarTitle: '服务订单',
-//                                      customerModel: widget.customerModel,
-//                                    ); // push
-//                                  },
-//                                ),
-//                              );
-//
-////                          _displaySnackBar(context);
-//
-//
-//                            },
-//                          );
-//                        },
-//                      );
-//                    },
-//                  ),
-//                ),
-//              ],
-//            ),
-//          ),
-//        ),
-//      ),
-//    );
-//  }
 
   _displaySnackBar(BuildContext context) {
     final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
@@ -404,9 +333,8 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
             goods_list: goodsList,
             onAddShoppingBlock: (GoodsModel goodsModel) {
               print(goodsModel.price);
-              // 获取购物车管理者model,并添加到购物车. 注意： 这里的context 会直接向上查找，但是 ShoppingCartManager 在本 context 注册的，会出现找不到情况
-//              final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
-              _shoppingCartManager.add(goodsModel);
+              final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
+              shoppingCartManager.add(goodsModel);
             },
           ),
         ));
@@ -443,11 +371,3 @@ class _ServiceOrderState extends State<ServiceOrder> with XMHLoadingStateMixin {
   }
 }
 
-
-class Test extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final shoppingCartManager = Provider.of<ShoppingCartManager>(context, listen: false);
-    return Container();
-  }
-}

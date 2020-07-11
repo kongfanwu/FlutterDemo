@@ -23,4 +23,12 @@ class ShoppingCartManager with ChangeNotifier {
     });
     notifyListeners(); // 发布更新通知
   }
+
+  /// 清空管理者数据
+  void clear() {
+    if (goodsList.length > 0) {
+      goodsList.removeRange(0, goodsList.length - 1);
+    }
+    allPrice = 0.0;
+  }
 }
