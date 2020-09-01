@@ -108,6 +108,9 @@ class _SDMMMyQRCodeState extends State<SDMMMyQRCode> {
                            color: Colors.white,
                          ),
                       ),
+                      onPressed: (){
+
+                      },
                     ),
                   ),
                 ],
